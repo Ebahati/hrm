@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Employee;
 use App\Models\Department;
 use App\Models\Designation;
+
 class EmployeeController extends Controller
 {
     public function store(Request $request)
@@ -45,17 +46,17 @@ class EmployeeController extends Controller
 
     public function manage()
     {
-        $employees = Employee::all(); 
+        // Eager load the designation relationship
+        $employees = Employee::with('designation')->get(); 
         return view('admin.manageEmployee', compact('employees'));
     }
+
+
     public function create()
     {
         $lastEmployeeId = Employee::max('id') ?? 0;  
         $departments = Department::all(); 
-        
-         $designations = Designation::all();
-   
-
+        $designations = Designation::all();
 
         return view('admin.newEmployee', [
             'employee' => null,
@@ -65,19 +66,19 @@ class EmployeeController extends Controller
         ]);
     }
 
-
-
     public function edit($id)
     {
         $employee = Employee::findOrFail($id);
-        return view('admin.newEmployee', compact('employee'));
+        $departments = Department::all(); // Fetch all departments
+        $designations = Designation::all(); // Fetch all designations
+
+        return view('admin.newEmployee', compact('employee', 'departments', 'designations'));
     }
 
     public function update(Request $request, $id)
     {
         $employee = Employee::findOrFail($id);
 
-      
         $validated = $request->validate([
             'employee_id' => 'required|unique:employees,employee_id,' . $employee->id,
             'name' => 'required|string|max:255',
@@ -109,7 +110,5 @@ class EmployeeController extends Controller
         return redirect()->route('manageEmployee')->with('success', 'Employee updated successfully.');
     }
 
-
-  
-
+    
 }

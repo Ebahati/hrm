@@ -54,7 +54,10 @@
                                         <tr>
                                             <td>{{ $employee->employee_id }}</td>
                                             <td>{{ $employee->name }}</td>
-                                            <td>{{ $employee->designation }}</td>
+                                            <td>{{ $employee->designation  }}</td>
+
+
+
                                             <td>{{ $employee->phone }}</td>
                                             <td>{{ $employee->id_number }}</td>
                                             <td>{{ $employee->nhif }}</td>

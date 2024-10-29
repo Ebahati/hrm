@@ -1,93 +1,61 @@
-@extends('admin.layouts.app') 
+@extends('admin.layouts.app')
 
 @section('title', 'Manage Loans')
 
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
+
 <div class="body-wrapper">
     <div class="container-fluid">
         <div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
             <div class="card-body px-4 py-3">
-                <div class="row align-items-center">
-                    <div class="col-9">
-                        <h4 class="fw-semibold mb-8">Manage Loans</h4>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item">
-                                    <a class="text-muted text-decoration-none" href="{{ route('dashboard') }}">Dashboard</a>
-                                </li>
-                                <li class="breadcrumb-item" aria-current="page">Manage Loans</li>
-                            </ol>
-                        </nav>
-                    </div>
-                    <div class="col-3 text-center mb-n5">
-                        <img src="{{ asset('assets/logo.png') }}" width="100" height="100" class="img-fluid mb-n4" />
-                    </div>
-                </div>
+                <h4 class="fw-semibold mb-8">Manage Loans</h4>
             </div>
         </div>
 
         <div class="datatables">
             <div class="card">
                 <div class="card-body">
-                    <div class="mb-2">
-                        <a href="{{ route('addLoan') }}" class="btn btn-primary">Add</a>
-                    </div>
-
                     <div class="table-responsive">
-                    <table id="file_export" class="table w-100 table-striped table-bordered display text-nowrap">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Designation</th>
-            <th>Installments</th>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Paid Amount</th>
-            <th>Remaining Amount</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($loans as $loan)
-        <tr id="loanRow_{{ $loan->id }}">
-            <td>{{ $loan->id }}</td>
-            <td>{{ $loan->employee->name }}</td>
-            <td>{{ $loan->employee->designation }}</td>
-            <td>{{ $loan->installments }}</td>
-            <td>{{ $loan->loan_date }}</td>
-            <td>${{ number_format($loan->amount, 2) }}</td>
-            <td>
-                <input type="number" class="form-control" 
-                       id="paidAmount_{{ $loan->id }}" 
-                       value="{{ $loan->total_paid }}" 
-                       onchange="updateLoan({{ $loan->id }}, {{ $loan->amount }})" />
-            </td>
-            <td>
-                <span id="remainingAmount_{{ $loan->id }}">
-                    ${{ number_format($loan->remaining_amount, 2) }}
-                </span>
-            </td>
-            <td>
-                <span id="loanStatus_{{ $loan->id }}" 
-                      class="badge {{ $loan->status === 'cleared' ? 'bg-success' : 'bg-warning' }}">
-                    {{ ucfirst($loan->status) }}
-                </span>
-            </td>
-            <td>
-                <button type="button" class="btn btn-success" 
-                        onclick="updateLoan({{ $loan->id }}, {{ $loan->amount }})">
-                    Update
-                </button>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
-
+                        <table id="loansTable" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Designation</th>
+                                    <th>Amount</th>
+                                    <th>Paid Amount</th>
+                                    <th>Remaining Amount</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($loans as $loan)
+                                <tr id="loanRow_{{ $loan->id }}">
+                                    <td>{{ $loan->id }}</td>
+                                    <td>{{ $loan->employee->name }}</td>
+                                    <td>{{ $loan->employee->designation }}</td>
+                                    <td>${{ number_format($loan->amount, 2) }}</td>
+                                    <td id="paidAmount_{{ $loan->id }}">${{ number_format($loan->total_paid, 2) }}</td>
+                                    <td id="remainingAmount_{{ $loan->id }}">${{ number_format($loan->remaining_amount, 2) }}</td>
+                                    <td>
+                                        <span id="loanStatus_{{ $loan->id }}" 
+                                              class="badge {{ $loan->status === 'cleared' ? 'bg-success' : 'bg-warning' }}">
+                                            {{ ucfirst($loan->status) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-info" 
+                                                onclick="openEditModal({{ $loan->id }}, {{ $loan->amount }}, {{ $loan->total_paid }})">
+                                            Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -95,20 +63,61 @@
     </div>
 </div>
 
+
+
+<!-- Edit Loan Modal -->
+<div class="modal fade" id="editLoanModal" tabindex="-1" aria-labelledby="editLoanModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="editLoanForm">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editLoanModalLabel">Edit Loan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editLoanId">
+                    <div class="mb-3">
+                        <label for="loanAmount" class="form-label">Loan Amount</label>
+                        <input type="number" class="form-control" id="loanAmount" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPaidAmount" class="form-label">Paid Amount</label>
+                        <input type="number" class="form-control" id="editPaidAmount" step="0.01" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
-function updateLoan(loanId, totalAmount) {
-    const paidAmountInput = document.getElementById(`paidAmount_${loanId}`);
-    const remainingAmountSpan = document.getElementById(`remainingAmount_${loanId}`);
-    const statusBadge = document.getElementById(`loanStatus_${loanId}`);
+function openEditModal(loanId, totalAmount, totalPaid) {
+    document.getElementById('editLoanId').value = loanId;
+    document.getElementById('loanAmount').value = totalAmount; 
+    document.getElementById('editPaidAmount').value = totalPaid;
 
-    const paidAmount = parseFloat(paidAmountInput.value) || 0;
-    const remainingAmount = (totalAmount - paidAmount).toFixed(2);
-    const status = remainingAmount <= 0 ? 'cleared' : 'pending';
+    const form = document.getElementById('editLoanForm');
+    form.action = `{{ route('loans.update', '') }}/${loanId}`; 
 
+    new bootstrap.Modal(document.getElementById('editLoanModal')).show();
+}
 
-    remainingAmountSpan.textContent = `$${remainingAmount}`;
+document.getElementById('editLoanForm').addEventListener('submit', function (e) {
+    e.preventDefault();
 
-    
+    const loanId = document.getElementById('editLoanId').value;
+    const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+    const currentPaidAmount = parseFloat(document.getElementById(`paidAmount_${loanId}`).textContent.replace(/\$/g, '')) || 0;
+    const newPaidAmount = parseFloat(document.getElementById('editPaidAmount').value) || 0;
+
+    const totalPaid = currentPaidAmount + newPaidAmount;
+    const newRemainingAmount = (loanAmount - totalPaid).toFixed(2);
+    const newStatus = newRemainingAmount <= 0 ? 'cleared' : 'pending';
+
     fetch(`/loans/${loanId}/update`, {
         method: 'POST',
         headers: {
@@ -116,49 +125,35 @@ function updateLoan(loanId, totalAmount) {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
         },
         body: JSON.stringify({
-            paid_amount: paidAmount,
-            remaining_amount: remainingAmount,
-            status: status,
+            paid_amount: newPaidAmount,
+            remaining_amount: newRemainingAmount,
+            status: newStatus,
         }),
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
-            console.log('Loan updated successfully.');
-
-            // Update status badge
-            statusBadge.textContent = status.charAt(0).toUpperCase() + status.slice(1);
-            statusBadge.className = status === 'cleared' ? 'badge bg-success' : 'badge bg-warning';
+            alert(data.message);
+            document.getElementById(`paidAmount_${loanId}`).textContent = `$${totalPaid.toFixed(2)}`;
+            document.getElementById(`remainingAmount_${loanId}`).textContent = `$${newRemainingAmount}`;
+            const statusBadge = document.getElementById(`loanStatus_${loanId}`);
+            statusBadge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+            statusBadge.className = newStatus === 'cleared' ? 'badge bg-success' : 'badge bg-warning';
         } else {
-            console.error('Error updating loan:', data.error);
+            alert('Error: ' + data.error); 
         }
     })
     .catch(error => {
         console.error('Error:', error);
+        alert('An error occurred while processing your request: ' + error.message);
     });
-}
-
-function clearLoan(loanId) {
-    fetch(`/loans/${loanId}/clear`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-        },
-        body: JSON.stringify({})
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log('Loan cleared successfully.');
-            location.reload();
-        } else {
-            console.error('Error clearing loan:', data.error);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
+});
 </script>
+
+
 @endsection

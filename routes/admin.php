@@ -8,6 +8,8 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\Employee\DepartmentController;
 use App\Http\Controllers\Employee\DesignationController;
 use App\Http\Controllers\LoanController;
+use App\Http\Controllers\Employee\SalaryController;
+
 
 Route::get('/dashboard', function () {
     return view('admin.dashboard');
@@ -28,27 +30,21 @@ Route::post('/employees/update/{id}', [EmployeeController::class, 'update'])->na
 Route::get('/manage-employee', [EmployeeController::class, 'manage'])->name('manageEmployee');
 
 Route::delete('/employees/delete/{id}', [EmployeeController::class, 'destroy'])->name('manageEmployee.destroy');
-
-
-
-
-
-
-Route::get('/manage-salary', function () {
-    return view('admin.manageSalary'); 
-})->name('manageSalary');
-
+// Salary routes
+Route::get('/manage-salary', [SalaryController::class, 'manageSalary'])->name('manageSalary');
+Route::get('/employee/details/{id}', [SalaryController::class, 'fetchEmployeeDetails'])->name('fetchEmployeeDetails');
+Route::post('/salary/update', [SalaryController::class, 'update'])->name('updateSalary');
+Route::get('/salary-list', [SalaryController::class, 'salaryList'])->name('salaryList');
+Route::post('/salary/store', [SalaryController::class, 'storeSalary'])->name('storeSalary');
+Route::delete('/salary/delete/{id}', [SalaryController::class, 'destroy'])->name('deleteSalary');
+Route::get('/employee/{employee_id}/salary', [SalaryController::class, 'getEmployeeSalary']);
+Route::get('/generate-payslip', [SalaryController::class, 'showPayslipGenerationForm'])->name('generate.payslip');
+Route::post('/generate-payslip', [SalaryController::class, 'generatePayslip'])->name('generatePayslip');
 Route::get('/salary-payments', function () {
     return view('admin.salaryPayments'); 
 })->name('salaryPayments');
 
-Route::get('/payslip-generation', function () {
-    return view('admin.payslipGeneration'); 
-})->name('payslipGeneration');
 
-Route::get('/salary-list', function () {
-    return view('admin.salaryList'); 
-})->name('salaryList');
 
 Route::get('/new-increment', function () {
     return view('admin.newIncrement'); 
@@ -58,33 +54,26 @@ Route::get('/increment-list', function () {
     return view('admin.incrementList'); 
 })->name('incrementList');
 
-Route::get('/manage-bonus', function () {
-    return view('admin.manageBonus'); 
-})->name('manageBonus');
+// Bonus
+Route::get('/bonuses', [SalaryController::class, 'createBonusForm'])->name('addBonus');
+Route::post('/bonus/store', [SalaryController::class, 'storeBonus'])->name('storeBonus');
+Route::get('/bonuses/manage', [SalaryController::class, 'manageBonuses'])->name('manageBonus');
+Route::get('/bonuses/edit/{id}', [SalaryController::class, 'editBonus'])->name('editBonus');
+Route::delete('/bonuses/delete/{id}', [SalaryController::class, 'deleteBonus'])->name('deleteBonus');
 
-Route::get('/add-bonus', function () {
-    return view('admin.addBonus'); 
-})->name('addBonus');
-
-Route::get('/manage-deductions', function () {
-    return view('admin.manageDeductions'); 
-})->name('manageDeductions');
-
-Route::get('/add-deductions', function () {
-    return view('admin.addDeductions'); 
-})->name('addDeductions');
-
-
+//deductions
+Route::get('/deductions/create', [SalaryController::class, 'createDeductionForm'])->name('createDeduction');
+Route::post('/deductions/store', [SalaryController::class, 'store'])->name('storeDeduction');
+Route::get('/manage-deductions', [SalaryController::class, 'manageDeductions'])->name('manageDeductions');
 Route::get('/edit-deductions', function () {
     return view('admin.editDeductions'); 
 })->name('editDeductions');
+Route::delete('/deductions/{id}', [SalaryController::class, 'destroy'])->name('deleteDeduction');
 // loan
 Route::post('/loans', [LoanController::class, 'store'])->name('loans.store');
 Route::get('/manage-loan', [LoanController::class, 'manageLoans'])->name('manageLoan'); 
 Route::get('/add-loan', [LoanController::class, 'create'])->name('addLoan');
-
-
-Route::post('/loans/{id}/update-paid', [LoanController::class, 'updatePaid'])->name('loans.updatePaid');
+Route::post('/loans/{id}/update', [LoanController::class, 'update'])->name('loans.update');
 Route::post('/loans/{id}/clear', [LoanController::class, 'clearLoan'])->name('loans.clear');
 
 

@@ -127,7 +127,7 @@
                   </a>
                 </li>
                 <li class="sidebar-item">
-                 <a href="{{ route('payslipGeneration') }}"  class="sidebar-link">
+                 <a href="{{ route('generate.payslip') }}" class="sidebar-link">
                     <div class="round-16 d-flex align-items-center justify-content-center">
                     <i class="fas fa-file-invoice fs-4"></i>
 
@@ -136,6 +136,7 @@
                   </a>
                 </li>
                 <li class="sidebar-item">
+                  
                   <a href="{{ route('manageBonus') }}" class="sidebar-link">
                     <div class="round-16 d-flex align-items-center justify-content-center">
                     <i class="fas fa-plus-circle fs-4"></i>

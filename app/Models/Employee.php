@@ -32,5 +32,27 @@ class Employee extends Model
         'work_permit',
         'joining_date',
     ];
+    public function designation()
+    {
+        return $this->belongsTo(Designation::class, 'designation', 'id'); // 'designation' is the foreign key in employees table
+    } 
+// Define relationship for bonuses
+public function bonuses()
+{
+    return $this->hasMany(Bonus::class, 'employee_id');
+}
+
+// Define relationship for deductions
+public function deductions()
+{
+    return $this->hasMany(Deduction::class, 'employee_id');
+}
     
+
+
+public function salary()
+{
+    return $this->hasOne(Salary::class);
+}
+
 }
