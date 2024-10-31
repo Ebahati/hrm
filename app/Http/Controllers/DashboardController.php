@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use App\Models\Notice;
 use App\Models\Holiday;
 use App\Models\File;
-
+use App\Models\Award;
 class DashboardController extends Controller
 {
     public function dashboard()
@@ -61,12 +61,48 @@ class DashboardController extends Controller
         $newFilesAdded = $filesThisYear - $filesLastYear; // Calculate the difference
 $percentageIncrease = ($filesLastYear > 0) ? (($newFilesAdded / $filesLastYear) * 100) : 0;
 
+      //Awards
+$totalAwards = Award::count();
+
+
+
+    $totalAwards = Award::count(); // Count of awards
+    $topPerformers = Award::with('employee') // Fetch awards with related employees
+        ->select('employee_id', 'award_category', 'date') // Select relevant columns
+        ->groupBy('employee_id', 'award_category', 'date') // Grouping may vary based on your requirements
+        ->get()
+        ->map(function($award) {
+            return [
+                'name' => $award->employee->name,
+                'role' => $award->employee->role,
+                'department' => $award->employee->department,
+                'award_category' => $award->award_category,
+                'month' => $award->date, // Format date as needed
+                'profile_picture_url' => $award->employee->profile_picture_url, 
+                // Assuming you have this field
+            ];
+        });
+
       
+            // Count awards by category
+            $awardCounts = Award::select('award_category', \DB::raw('count(*) as total'))
+                ->groupBy('award_category')
+                ->get();
+        
+           
 
       
         return view('admin.dashboard', compact('totalEmployees', 'increase', 'percentageIncrease', 
             'totalEmployeesLastYear', 'totalNotices', 'latestNotice', 'noticesThisMonth', 
             'holidaysCount', 'publishedCount', 'totalPublishedHolidays', 'totalActiveNotices', 
-            'totalPublished', 'dates', 'noticesCount', 'holidaysCount','totalFiles','filesThisYear', 'filesLastYear', 'newFilesAdded',));
+            'totalPublished', 'dates', 'noticesCount', 'holidaysCount','totalFiles','filesThisYear', 'filesLastYear', 'newFilesAdded','totalAwards','topPerformers','awardCounts'));
     }
+
+   
+
+
+
+   
+ 
+
 }

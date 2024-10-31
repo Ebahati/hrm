@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Dashboard')
+@section('title', 'Leave Reports')
 
 @section('content')
 
@@ -11,13 +11,13 @@
             <div class="card-body px-4 py-3">
                 <div class="row align-items-center">
                     <div class="col-9">
-                        <h4 class="fw-semibold mb-8">Leave Report</h4>
+                        <h4 class="fw-semibold mb-8">Leave Reports</h4>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item">
                                     <a class="text-muted text-decoration-none" href="{{ route('dashboard') }}">Dashboard</a>
                                 </li>
-                                <li class="breadcrumb-item" aria-current="page">Leave Report</li>
+                                <li class="breadcrumb-item" aria-current="page">Leave Reports</li>
                             </ol>
                         </nav>
                     </div>
@@ -30,18 +30,18 @@
             </div>
         </div>
 
-        <!-- Row -->
+      
         <div class="row">
             <div class="col-12">
-                <!-- Leave Report Form -->
+              
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Generate Leave Report</h4>
                     </div>
-                    <form class="form-horizontal r-separator" method="GET" action="#">
+                    <form class="form-horizontal r-separator" method="GET" action="{{ route('leaveReports') }}">
                         <div class="card-body">
 
-                            <!-- Date Range -->
+                          
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
                                     <label for="from_date" class="col-3 text-end col-form-label">From Date</label>
@@ -63,19 +63,29 @@
                             <!-- Employee Selection -->
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
-                                    <label for="employee_id" class="col-3 text-end col-form-label">Employee Name</label>
+                                    <label for="employee_id" class="col-3 text-end col-form-label">Employee ID</label>
                                     <div class="col-9 border-start pb-2 pt-2">
-                                        <select class="form-select" id="employee_id" name="employee_id">
+                                        <select class="form-select" id="employee_id" name="employee_id" onchange="updateEmployeeName()">
                                             <option value="" selected>-- Select Employee --</option>
-                                            <option value="1">John Doe</option>
-                                            <option value="2">Jane Smith</option>
-                                            <option value="3">Michael Johnson</option>
+                                            @foreach($employees as $employee)
+                                                <option value="{{ $employee->employee_id }}">{{ $employee->employee_id }} - {{ $employee->name }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Leave Type -->
+                          
+                            <div class="form-group mb-0">
+                                <div class="row align-items-center">
+                                    <label for="employee_name" class="col-3 text-end col-form-label">Employee Name</label>
+                                    <div class="col-9 border-start pb-2 pt-2">
+                                        <input type="text" class="form-control" id="employee_name" name="employee_name" readonly />
+                                    </div>
+                                </div>
+                            </div>
+
+                         
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
                                     <label for="leave_type" class="col-3 text-end col-form-label">Leave Type</label>
@@ -117,8 +127,66 @@
                 </div>
             </div>
         </div>
+
+        <!-- Leave Applications Table -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Leave Applications</h4>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Employee</th>
+                                        <th>Leave Type</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($leaves as $leave)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $leave->employee->name }}</td>
+                                            <td>{{ $leave->leave_category }}</td>
+                                            <td>{{ $leave->status }}</td>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <form action="{{ route('approveLeave', $leave->id) }}" method="POST" style="display: inline;">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-success">Approve</button>
+                                                    </form>
+                                                    <form action="{{ route('rejectLeave', $leave->id) }}" method="POST" style="display: inline;">
+                                                        @csrf
+                                                        <button type="submit" class="btn bg-danger-subtle text-danger">Reject</button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- End Row -->
     </div>
 </div>
+
+<script>
+    function updateEmployeeName() {
+        var employeeSelect = document.getElementById('employee_id');
+        var employeeNameInput = document.getElementById('employee_name');
+
+      
+        var selectedOption = employeeSelect.options[employeeSelect.selectedIndex].text;
+        var employeeName = selectedOption.split(' - ')[1];
+        employeeNameInput.value = employeeName;
+    }
+</script>
 
 @endsection

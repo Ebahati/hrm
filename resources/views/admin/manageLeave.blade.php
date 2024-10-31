@@ -28,6 +28,7 @@
                 </div>
             </div>
         </div>
+
         <div class="datatables">
             <!-- start File export -->
             <div class="card">
@@ -50,72 +51,35 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Test Data -->
-                                <tr>
-                                    <td>John Doe</td>
-                                    <td>Medical Leave</td>
-                                    <td>2024-10-20</td>
-                                    <td>2024-10-25</td>
-                                    <td>5</td>
-                                    <td>Annual Leave</td>
-                                    <td>Pending</td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <form action="{{ route('leaveReports', 1) }}" method="POST" style="display: inline;">
-                                                @csrf
-                                                <button type="submit" class="btn btn-success">Approve</button>
-                                            </form>
-                                            <form action="{{ route('leaveReports', 1) }}" method="POST" style="display: inline;">
-                                                @csrf
-                                                <button type="submit" class="btn bg-danger-subtle text-danger">Reject</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Jane Smith</td>
-                                    <td>Vacation</td>
-                                    <td>2024-10-22</td>
-                                    <td>2024-10-30</td>
-                                    <td>8</td>
-                                    <td>Vacation Leave</td>
-                                    <td>Pending</td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <form action="{{ route('leaveReports', 2) }}" method="POST" style="display: inline;">
-                                                @csrf
-                                                <button type="submit" class="btn btn-success">Approve</button>
-                                            </form>
-                                            <form action="{{ route('leaveReports', 2) }}" method="POST" style="display: inline;">
-                                                @csrf
-                                                <button type="submit" class="btn bg-danger-subtle text-danger">Reject</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Sam Wilson</td>
-                                    <td>Personal Leave</td>
-                                    <td>2024-10-18</td>
-                                    <td>2024-10-20</td>
-                                    <td>2</td>
-                                    <td>Casual Leave</td>
-                                    <td>Pending</td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <form action="{{ route('leaveReports', 3) }}" method="POST" style="display: inline;">
-                                                @csrf
-                                                <button type="submit" class="btn btn-success">Approve</button>
-                                            </form>
-                                            <form action="{{ route('leaveReports', 3) }}" method="POST" style="display: inline;">
-                                                @csrf
-                                                <button type="submit" class="btn bg-danger-subtle text-danger">Reject</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                             
-                            </tbody>
+    @foreach($leaveRequests as $leave)
+        <tr>
+            <td>{{ $leave->employee->name }}</td>
+            <td>{{ $leave->reason }}</td>
+            <td>{{ $leave->start_date }}</td>
+            <td>{{ $leave->end_date }}</td>
+            <td>{{ $leave->leave_days }}</td> 
+            <td>{{ $leave->leave_category }}</td>
+            <td>{{ $leave->status }}</td>
+            <td>
+    <div class="d-flex align-items-center gap-3">
+        <form class="approve-form" action="{{ route('approveLeave', $leave->id) }}" method="POST" style="display: inline;">
+            @csrf
+            <button type="button" class="btn btn-success approve-button" data-leave-id="{{ $leave->id }}">Approve</button>
+        </form>
+        <form class="reject-form" action="{{ route('rejectLeave', $leave->id) }}" method="POST" style="display: inline;">
+            @csrf
+            <button type="button" class="btn bg-danger-subtle text-danger reject-button" data-leave-id="{{ $leave->id }}">Reject</button>
+        </form>
+    </div>
+</td>
+
+
+
+
+        </tr>
+    @endforeach
+</tbody>
+
                         </table>
                     </div>
                 </div>
@@ -124,4 +88,46 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.approve-button').on('click', function() {
+            var leaveId = $(this).data('leave-id');
+            $.ajax({
+                url: '/leave-reports/approve/' + leaveId,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}' 
+                },
+                success: function(response) {
+                   
+                    alert('Leave application approved successfully.');
+                    location.reload(); 
+                },
+                error: function(xhr) {
+                    alert('Error approving leave: ' + xhr.responseText);
+                }
+            });
+        });
+
+        $('.reject-button').on('click', function() {
+            var leaveId = $(this).data('leave-id');
+            $.ajax({
+                url: '/leave-reports/reject/' + leaveId,
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}' 
+                },
+                success: function(response) {
+                   
+                    alert('Leave application rejected successfully.');
+                    location.reload(); 
+                },
+                error: function(xhr) {
+                    alert('Error rejecting leave: ' + xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
 @endsection

@@ -98,15 +98,7 @@
                     <span class="hide-menu">Salary List</span>
                   </a>
                 </li>
-                <li class="sidebar-item">
-                  <a href="{{ route('newIncrement') }}" class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-arrow-up fs-4"></i>
-
-                    </div>
-                    <span class="hide-menu">New increment</span>
-                  </a>
-                </li>
+               
                 <li class="sidebar-item">
                   <a href="{{ route('incrementList') }}"  class="sidebar-link">
                     <div class="round-16 d-flex align-items-center justify-content-center">
@@ -410,37 +402,12 @@
                   </a>
                 </li>
               
-            <li class="sidebar-item">
-                  <a href="manage-leavecategories" class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-calendar-alt fs-4"></i>
-
-                    </div>
-                    <span class="hide-menu">Manage Leave Categories</span>
-                  </a>
-                </li>
+          
                
               
-            
-            <li class="sidebar-item">
-                  <a href="manage-awardcategories" class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-trophy fs-4"></i>
-
-                    </div>
-                    <span class="hide-menu">Manage Awards Categories</span>
-                  </a>
-                </li>
+           
                  
-            <li class="sidebar-item">
-                  <a href="manage-roles" class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-user-shield fs-4"></i>
-
-                    </div>
-                    <span class="hide-menu">Roles</span>
-                  </a>
-                </li>
+            
               </ul>
             </li>
 

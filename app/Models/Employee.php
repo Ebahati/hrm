@@ -34,7 +34,7 @@ class Employee extends Model
     ];
     public function designation()
     {
-        return $this->belongsTo(Designation::class, 'designation', 'id'); // 'designation' is the foreign key in employees table
+        return $this->belongsTo(Designation::class, 'designation', 'name'); // 'designation' is the foreign key in employees table
     } 
 // Define relationship for bonuses
 public function bonuses()

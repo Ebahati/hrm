@@ -28,46 +28,76 @@
                 </div>
             </div>
         </div>
+        
         <!-- Row -->
         <div class="row">
             <div class="col-12">
+                <!-- Display Success Message -->
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+                
+                <!-- Display Validation Errors -->
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
                 <!-- start Employee Timing -->
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Add Award</h4>
                     </div>
-                    <form class="form-horizontal r-separator" method="POST" action="{{ route('manageAward') }}">
-                        @csrf
+                    <form class="form-horizontal r-separator" method="POST" action="{{ route('storeAward') }}">
+                    @csrf
                         <div class="card-body">
-                            <!-- Employee Name -->
+                            <!-- Employee ID -->
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
-                                    <label for="employeeName" class="col-3 text-end col-form-label">Employee Name</label>
+                                    <label for="employeeId" class="col-3 text-end col-form-label">Employee ID</label>
                                     <div class="col-9 border-start pb-2 pt-2">
-                                        <select class="form-select" id="employeeName" name="employee_id" required>
-                                            <option selected disabled>Select Employee</option>
-                                            <option value="1">SuperAdmin</option>
-                                            <option value="2">SubAdmin</option>
-                                            <option value="3">Employee</option>
+                                        <select class="form-select" id="employeeId" name="employee_id" required onchange="showEmployeeName()">
+                                            <option selected disabled>Select Employee ID</option>
+                                            @foreach($employees as $employee)
+                                                <option value="{{ $employee->employee_id }}">{{ $employee->employee_id }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
                             </div>
-                            <!-- Award Category -->
+                          
+                            <div class="form-group mb-0">
+                                <div class="row align-items-center">
+                                    <label for="employeeName" class="col-3 text-end col-form-label">Employee Name</label>
+                                    <div class="col-9 border-start pb-2 pt-2">
+                                        <input type="text" class="form-control" id="employeeName" placeholder="Employee Name" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                        
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
                                     <label for="awardCategory" class="col-3 text-end col-form-label">Award Category</label>
                                     <div class="col-9 border-start pb-2 pt-2">
                                         <select class="form-select" id="awardCategory" name="award_category" required>
                                             <option selected disabled>Select Award Category</option>
-                                            <option value="1">Employee of the Month</option>
-                                            <option value="2">Best Team Player</option>
-                                            <option value="3">Outstanding Performance</option>
+                                            <option value="Employee of the Month">Employee of the Month</option>
+                                            <option value="Best Team Player">Best Team Player</option>
+                                            <option value="Outstanding Performance">Outstanding Performance</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
-                            <!-- Gift Item -->
+                          
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
                                     <label for="giftItem" class="col-3 text-end col-form-label">Gift Item</label>
@@ -76,7 +106,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Date -->
+                          
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
                                     <label for="awardDate" class="col-3 text-end col-form-label">Date</label>
@@ -85,25 +115,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Publication Status -->
-                            <div class="form-group mb-0">
-                                <div class="row align-items-center">
-                                    <label for="publicationStatus" class="col-3 text-end col-form-label">Publication Status</label>
-                                    <div class="col-9 border-start pb-2 pt-2">
-                                        <select class="form-select" id="publicationStatus" name="publication_status" required>
-                                            <option selected disabled>Select Status</option>
-                                            <option value="published">Published</option>
-                                            <option value="unpublished">Unpublished</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Description -->
+                          
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
                                     <label for="description" class="col-3 text-end col-form-label">Description</label>
                                     <div class="col-9 border-start pb-2 pt-2">
-                                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter Description" required></textarea>
+                                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter Description"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -116,11 +133,21 @@
                         </div>
                     </form>
                 </div>
-                <!-- end Employee Timing -->
+              
             </div>
         </div>
         <!-- End Row -->
     </div>
 </div>
+
+<script>
+    const employees = @json($employees); 
+    
+    function showEmployeeName() {
+        const selectedId = document.getElementById('employeeId').value;
+        const employee = employees.find(emp => emp.employee_id === selectedId);
+        document.getElementById('employeeName').value = employee ? employee.name : '';
+    }
+</script>
 
 @endsection

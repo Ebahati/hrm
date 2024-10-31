@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="datatables">
-            <!-- start Leave Status -->
+        
             <div class="card">
                 <div class="card-body">
                     <div class="mb-2">
@@ -47,35 +47,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Test Data -->
-                                <tr>
-                                    <td>Annual Leave</td>
-                                    <td>Vacation with family</td>
-                                    <td>2024-10-20</td>
-                                    <td>2024-10-25</td>
-                                    <td>Approved</td>
-                                </tr>
-                                <tr>
-                                    <td>Medical Leave</td>
-                                    <td>Doctor's appointment</td>
-                                    <td>2024-11-01</td>
-                                    <td>2024-11-03</td>
-                                    <td>Pending</td>
-                                </tr>
-                                <tr>
-                                    <td>Personal Leave</td>
-                                    <td>Urgent family matter</td>
-                                    <td>2024-11-05</td>
-                                    <td>2024-11-07</td>
-                                    <td>Rejected</td>
-                                </tr>
-                                <!-- End Test Data -->
+                                @foreach($leaveApplications as $leave)
+                                    <tr>
+                                        <td>{{ $leave->leave_category }}</td>
+                                        <td>{{ $leave->reason }}</td>
+                                        <td>{{ $leave->start_date }}</td>
+                                        <td>{{ $leave->end_date }}</td>
+                                        <td>{{ $leave->status }}</td> 
+                                    </tr>
+                                @endforeach
+                                @if($leaveApplications->isEmpty())
+                                    <tr>
+                                        <td colspan="5" class="text-center">No leave applications found.</td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-            <!-- end Leave Status -->
+         
         </div>
     </div>
 </div>
