@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -42,4 +43,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+    public function employee()
+    {
+        return $this->hasOne(Employee::class, 'employee_id', 'employee_id'); // Assuming employee_id is the foreign key in users table
+    }
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr" data-bs-theme="light" data-color-theme="Blue_Theme" data-layout="vertical">
 <head>
-  <!-- Required meta tags -->
+
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -45,15 +45,15 @@
   </div>
   <div id="main-wrapper">
    
-        @include('admin.layouts.sidebar')
+       
 
     <div class="page-wrapper">
-    @include('admin.layouts.header')
+   
 
    
         @yield('content')
 
-        <!-- Toast Notification -->
+     
         <div class="toast" id="greetingToast" data-bs-autohide="false">
             <div class="toast-header">
                 <strong class="me-auto" id="greetingMessage"></strong>
@@ -62,7 +62,7 @@
             <div class="toast-body" id="usernameMessage"></div>
         </div>
 
-        <!-- Theme Customizer -->
+      
         <script>
   function handleColorTheme(e) {
     document.documentElement.setAttribute("data-color-theme", e);
@@ -270,7 +270,7 @@
   </div>
   <div class="dark-transparent sidebartoggler"></div>
   <script>
- 
+
   const username = "Admin"; 
 
   function getGreeting() {
@@ -288,13 +288,12 @@
   document.getElementById('greetingMessage').innerText = getGreeting();
   document.getElementById('usernameMessage').innerText = "Welcome, " + username;
 
-
   const toast = new bootstrap.Toast(document.getElementById('greetingToast'));
   toast.show();
 </script>
 
   <script src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/js/vendor.min.js"></script>
-
+  <!-- Import Js Files -->
   <script src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/libs/simplebar/dist/simplebar.min.js"></script>
   <script src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/js/theme/app.init.js"></script>
@@ -302,7 +301,7 @@
   <script src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/js/theme/app.min.js"></script>
   <script src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/js/theme/sidebarmenu.js"></script>
 
-
+  <!-- solar icons -->
   <script src="../../../../cdn.jsdelivr.net/npm/iconify-icon%401.0.8/dist/iconify-icon.min.js"></script>
   <script src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/libs/owl.carousel/dist/owl.carousel.min.js"></script>
  

@@ -12,16 +12,28 @@ use App\Http\Controllers\Employee\SalaryController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\LeaveController; 
 use App\Http\Controllers\AwardController;
+use Illuminate\Support\Facades\Auth;
+
+Auth::routes();
+
 
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-
-// EMPLOYEES 
+//employee admin
+Route::group(['middleware' => ['role:SuperAdmin,SubAdmin']], function () {
 Route::get('/new-employee', [EmployeeController::class, 'create'])->name('newEmployee');
 Route::post('/employees/store', [EmployeeController::class, 'store'])->name('employees.store');
 Route::get('/employees/edit/{id}', [EmployeeController::class, 'edit'])->name('editEmployee');
 Route::post('/employees/update/{id}', [EmployeeController::class, 'update'])->name('employees.update');
 Route::get('/manage-employee', [EmployeeController::class, 'manage'])->name('manageEmployee');
 Route::delete('/employees/delete/{id}', [EmployeeController::class, 'destroy'])->name('manageEmployee.destroy');
+});
+//employee
+Route::middleware(['auth', 'employee.access'])->group(function () {
+    Route::get('/add-leave', [LeaveController::class, 'showLeaveApplicationForm'])->name('addLeave');
+    Route::post('/add-leave', [LeaveController::class, 'storeLeaveApplication'])->name('storeLeave');
+    Route::get('/leave-status', [LeaveController::class, 'showStatus'])->name('leaveStatus');
+    
+});
 // Salary routes
 Route::get('/manage-salary', [SalaryController::class, 'manageSalary'])->name('manageSalary');
 Route::get('/employee/details/{id}', [SalaryController::class, 'fetchEmployeeDetails'])->name('fetchEmployeeDetails');
@@ -82,9 +94,7 @@ Route::get('/expense-list', [ExpenseController::class, 'showExpenses'])->name('e
 
 //leave
 Route::get('/manage-leave', [LeaveController::class, 'manageLeaves'])->name('manageLeave');
-Route::get('/add-leave', [LeaveController::class, 'showLeaveApplicationForm'])->name('addLeave');
-Route::post('/add-leave', [LeaveController::class, 'storeLeaveApplication'])->name('storeLeave');
-Route::get('/leave-status', [LeaveController::class, 'showStatus'])->middleware('auth')->name('leaveStatus');
+
 Route::get('/leave-reports', [LeaveController::class, 'showReports'])->name('leaveReports');
 Route::post('/leave-reports/approve/{id}', [LeaveController::class, 'approve'])->name('approveLeave');
 Route::post('/leave-reports/reject/{id}', [LeaveController::class, 'reject'])->name('rejectLeave');

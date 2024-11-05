@@ -1,4 +1,8 @@
-
+@if(Auth::check())
+        <!-- Retrieve the authenticated user -->
+        @php
+            $user = Auth::user();
+        @endphp
 <!-- Sidebar Start -->
 <aside class="left-sidebar with-vertical">
       <div><!-- ---------------------------------- -->
@@ -41,7 +45,68 @@
               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
               <span class="hide-menu">Section</span>
             </li>
-            
+            <li class="sidebar-item">
+              <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
+                <span class="d-flex">
+                <i class="fas fa-folder fs-4"></i>
+
+                </span>
+                <span class="hide-menu">File management</span>
+              </a>
+              <ul aria-expanded="false" class="collapse first-level">
+                <li class="sidebar-item">
+                  <a href="{{ route('addFiles') }}" class="sidebar-link">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-file-upload fs-4"></i>
+
+                    </div>
+                    <span class="hide-menu">New upload</span>
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a href="{{ route('manageFiles') }}" class="sidebar-link">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-archive fs-4"></i>
+
+                    </div>
+                    <span class="hide-menu">File list</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            @if (strpos($user->employee_id, 'EMP') === 0)
+            <!-- Links for Employees -->
+            <li class="sidebar-item">
+              <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
+                <span class="d-flex">
+                <i class="fas fa-id-badge fs-4"></i>
+
+                </span>
+                <span class="hide-menu">Leave</span>
+              </a>
+              <ul aria-expanded="false" class="collapse first-level">
+                
+             
+                <li class="sidebar-item">
+                  <a href="{{ route('addLeave') }}"class="sidebar-link">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-paper-plane fs-4"></i>
+
+                    </div>
+                    <span class="hide-menu">New leave application</span>
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a href="{{ route('leaveStatus') }}"class="sidebar-link">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-paper-plane fs-4"></i>
+
+                    </div>
+                    <span class="hide-menu">Leave Status</span>
+                  </a>
+                </li>
+            @else
+             <!-- Links for SuperAdmins -->
             <li class="sidebar-item">
               <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
                 <span class="d-flex">
@@ -222,35 +287,7 @@
                 </li>
               </ul>
             </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
-                <span class="d-flex">
-                <i class="fas fa-id-badge fs-4"></i>
-
-                </span>
-                <span class="hide-menu">Leave</span>
-              </a>
-              <ul aria-expanded="false" class="collapse first-level">
-                
-               
-                <li class="sidebar-item">
-                  <a href="{{ route('addLeave') }}"class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-paper-plane fs-4"></i>
-
-                    </div>
-                    <span class="hide-menu">New leave application</span>
-                  </a>
-                </li>
-                <li class="sidebar-item">
-                  <a href="{{ route('leaveStatus') }}"class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-paper-plane fs-4"></i>
-
-                    </div>
-                    <span class="hide-menu">Leave Status</span>
-                  </a>
-                </li>
+            
                 
                 <li class="sidebar-item">
                   <a href="{{ route('manageLeave') }}" class="sidebar-link">
@@ -334,35 +371,7 @@
                 
               </ul>
             </li>
-            <li class="sidebar-item">
-              <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
-                <span class="d-flex">
-                <i class="fas fa-folder fs-4"></i>
-
-                </span>
-                <span class="hide-menu">File management</span>
-              </a>
-              <ul aria-expanded="false" class="collapse first-level">
-                <li class="sidebar-item">
-                  <a href="{{ route('addFiles') }}" class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-file-upload fs-4"></i>
-
-                    </div>
-                    <span class="hide-menu">New upload</span>
-                  </a>
-                </li>
-                <li class="sidebar-item">
-                  <a href="{{ route('manageFiles') }}" class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-archive fs-4"></i>
-
-                    </div>
-                    <span class="hide-menu">File list</span>
-                  </a>
-                </li>
-              </ul>
-            </li>
+          
             <li class="sidebar-item">
                   <a href="manage-holiday" class="sidebar-link">
                     <div class="round-16 d-flex align-items-center justify-content-center">
@@ -414,26 +423,26 @@
            
            
         </nav>
-
-        <div class="fixed-profile p-3 mx-4 mb-2 bg-secondary-subtle rounded mt-3">
-          <div class="hstack gap-3">
-            <div class="john-img">
-              <img src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/images/profile/user-1.jpg" class="rounded-circle" width="40" height="40" alt="modernize-img" />
-            </div>
-            <div class="john-title">
-              <h6 class="mb-0 fs-4 fw-semibold">Mathew</h6>
-              <span class="fs-2">Designer</span>
-            </div>
-            <button class="border-0 bg-transparent text-primary ms-auto" tabindex="0" type="button" aria-label="logout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="logout">
-            <i class="fas fa-power-off fs-6"></i>
-
-            </button>
-          </div>
+        @endif
+        @else
+       <div class="fixed-profile p-3 mx-4 mb-2 bg-secondary-subtle rounded mt-3">
+    <div class="hstack gap-3">
+        <div class="john-img">
+            <img src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/images/profile/user-1.jpg" class="rounded-circle" width="40" height="40" alt="modernize-img" />
         </div>
+        <div class="john-title">
+            <h6 class="mb-0 fs-4 fw-semibold">{{ Auth::user()->employee_id }}</h6>
+            <span class="fs-2">{{ Auth::user()->designation }}</span>
+        </div>
+        <a href="{{ route('login') }}" class="border-0 bg-transparent text-primary ms-auto" tabindex="0" aria-label="logout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Logout">
+            <i class="fas fa-power-off fs-6"></i>
+        </a>
+    </div>
+</div>
+@endif
 
-        <!-- ---------------------------------- -->
-        <!-- Start Vertical Layout Sidebar -->
-        <!-- ---------------------------------- -->
+       
       </div>
     </aside>
+   
     <!--  Sidebar End -->

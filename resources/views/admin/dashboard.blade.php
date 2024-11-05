@@ -106,6 +106,7 @@
                   <div class="row align-items-center">
                     <div class="col-md-8">
                     <div id="chart" class="mx-n6"></div>
+                   
                     </div>
                     <div class="col-md-4">
                       <div class="hstack mb-4 pb-1">
@@ -227,39 +228,12 @@
         </div>
     </div>
     <canvas id="employees" width="400" height="200"></canvas> 
+   
+
+</div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const totalEmployeesLastYear = {{ $totalEmployeesLastYear }};
-    const totalEmployees = {{ $totalEmployees }};
-
-    const ctx = document.getElementById('employees').getContext('2d');
-    const myChart = new Chart(ctx, {
-        type: 'line', 
-        data: {
-            labels: ['Last Year', 'This Year'],
-            datasets: [{
-                label: 'Employees',
-                data: [totalEmployeesLastYear, totalEmployees],
-                backgroundColor: '#00BFFF',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 2,
-                fill: true, 
-                tension: 0, 
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-</script>
-
-            </div>
+          
            
             <div class="col-lg-4 d-flex align-items-stretch">
     <div class="card w-100">
@@ -356,13 +330,8 @@
           </div>
         </div>
       </div>
-     
-
-
-      @endsection
-
-      @section('scripts') 
-      <script src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/libs/apexcharts/dist/apexcharts.min.js"></script>
+      <script src= "https://bootstrapdemos.adminmart.com/modernize/dist/assets/libs/apexcharts/dist/apexcharts.min.js">
+      </script>
       <script>
     document.addEventListener("DOMContentLoaded", function () {
        
@@ -420,31 +389,24 @@
         window.chart.render();
     });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-   
-    const awardCounts = @json($awardCounts);
+    const totalEmployeesLastYear = {{ $totalEmployeesLastYear }};
+    const totalEmployees = {{ $totalEmployees }};
 
-   
-    console.log(awardCounts); 
-
- 
-    const labels = awardCounts.map(award => award.award_category);
-    const data = awardCounts.map(award => award.total);
-
-   
-    const ctx = document.getElementById('awardChart').getContext('2d');
-    const awardChart = new Chart(ctx, {
-        type: 'bar', 
+    const ctx = document.getElementById('employees').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'line', 
         data: {
-            labels: labels,
+            labels: ['Last Year', 'This Year'],
             datasets: [{
-                label: 'Number of Awards',
-                data: data,
-                backgroundColor: 'rgba(75, 192, 192, 0.5)', 
+                label: 'Employees',
+                data: [totalEmployeesLastYear, totalEmployees],
+                backgroundColor: '#00BFFF',
                 borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
+                borderWidth: 2,
+                fill: true, 
+                tension: 0, 
         },
         options: {
             responsive: true,
@@ -456,4 +418,38 @@
         }
     });
 </script>
-@endsection
+        
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+   
+const ctxAward = document.getElementById('awardChart').getContext('2d');
+const awardChart = new Chart(ctxAward, {
+    type: 'line', // Change the chart type if needed
+    data: {
+        labels: {!! json_encode($awardCounts->pluck('award_category')) !!},
+        datasets: [{
+            label: 'Total Awards',
+            data: {!! json_encode($awardCounts->pluck('total')) !!},
+            backgroundColor: '#36A2EB', // Use your preferred color
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+</script>
+
+
+
+      @endsection
+
+ 

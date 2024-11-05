@@ -12,14 +12,14 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class SalaryController extends Controller
 {
-    // creating a new deduction
+    
     public function createDeductionForm()
     {
         $employees = Employee::all();
         return view('admin.addDeductions', compact('employees'));
     }
 
-    // Store the deduction data
+   
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -34,21 +34,21 @@ class SalaryController extends Controller
         return redirect()->route('manageDeductions')->with('success', 'Deduction added successfully.');
     }
 
-    // Display all deductions on the manageDeductions page
+   
     public function manageDeductions()
     {
         $deductions = Deduction::with('employee')->get();
         return view('admin.manageDeductions', compact('deductions'));
     }
 
-    // Display the add bonus form
+ 
     public function createBonusForm()
     {
         $employees = Employee::all();
         return view('admin.addBonus', compact('employees'));
     }
 
-    // Store the bonus in the database
+   
     public function storeBonus(Request $request)
     {
         $validated = $request->validate([
@@ -70,7 +70,7 @@ class SalaryController extends Controller
         return view('admin.manageBonus', compact('bonuses'));
     }
 
-    // Function to display the manage salary view
+   
     public function manageSalary()
     {
         $employees = Employee::with(['bonuses', 'deductions'])->get()->map(function($employee) {
@@ -128,11 +128,12 @@ class SalaryController extends Controller
         return view('admin.salaryList', compact('employees'));
     }
 
-    // Function to update salary information
+   
     public function update(Request $request)
     {
         $validatedData = $request->validate([
             'employee_id' => 'required|exists:employees,employee_id', 
+              'basic_salary' => 'required|numeric',
             'bonus' => 'nullable|numeric',
             'house_allowance' => 'nullable|numeric',
             'medical_allowance' => 'nullable|numeric',
@@ -160,7 +161,7 @@ class SalaryController extends Controller
     
         $netSalary = $grossSalary - $totalDeductions;
     
-        // Update or create the salary record using employee_id
+      
         try {
             Salary::updateOrCreate(
                 ['employee_id' => $request->employee_id],
@@ -240,10 +241,10 @@ class SalaryController extends Controller
         return redirect()->route('salaryList')->with('success', 'Salary entry deleted successfully.');
     }
 
-//payslips
+
     public function showPayslipGenerationForm()
     {
-        // Fetch all employees and their associated salaries
+        
         $salaries = Salary::with('employee')->get(); 
         $employees = Employee::all();
     
