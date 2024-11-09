@@ -36,7 +36,7 @@
                 <img src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/images/svgs/icon-briefcase.svg" 
                      width="50" height="50" class="mb-3" alt="modernize-img" />
                 <p class="fw-semibold fs-3 text-warning mb-1">Files</p>
-                <h5 class="fw-semibold text-warning mb-0">{{ $totalFiles }}</h5> <!-- Display the count here -->
+                <h5 class="fw-semibold text-warning mb-0">{{ $totalFiles }}</h5> 
             </div>
         </div>
     </div>
@@ -158,7 +158,7 @@
         @if($latestNotice)
             <strong>{{ $latestNotice->title }}:</strong> 
             {{ Str::limit($latestNotice->content, 100) }}
-            <a href="{{ route('viewNotice', $latestNotice->id) }}" class="btn btn-primary w-100">Read more</a>
+
         @else
             No notices available.
         @endif
@@ -208,7 +208,7 @@
 </div>
 
 
-              <!-- rem check all graphs -->
+              <!-- check all graphs -->
               <div class="card w-100">
     <div class="card-body">
         <div class="row align-items-start">
@@ -221,6 +221,8 @@
                     </span>
                     <p class="text-dark me-1 fs-3 mb-0">{{ $increase > 0 ? '+' : '' }}{{ number_format($increase) }} ({{ number_format($percentageIncrease, 2) }}%)</p>
                     <p class="fs-3 mb-0">since last year</p>
+                    <canvas id="employeeIncreaseChart" width="400" height="200"></canvas>
+                   
                 </div>
             </div>
             <div class="col-4">
@@ -232,11 +234,61 @@
             </div>
         </div>
     </div>
-    <canvas id="employees" width="400" height="200"></canvas> 
-   
 
+        <div class="col-6">
+          
+            <canvas id="genderDistributionChart" width="400" height="200"></canvas>
+        </div>
+        
+     
+       
+    </div>
 </div>
-</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  
+    var genderData = {
+        labels: ['Male', 'Female'],
+        datasets: [{
+            data: [{{ $maleCount }}, {{ $femaleCount }}],
+            backgroundColor: ['#6495ED', '#FF6384'],
+            hoverOffset: 4
+        }]
+    };
+
+   
+    var genderDistributionChart = new Chart(document.getElementById('genderDistributionChart'), {
+        type: 'pie',
+        data: genderData,
+    });
+
+   
+    var increaseData = {
+        labels: ['Last Year', 'Current Year'],
+        datasets: [{
+            label: 'Employees',
+            data: [{{ $totalEmployeesLastYear }}, {{ $totalEmployees }}], 
+            backgroundColor: ['#6495ED', '#6495ED'],
+            borderColor: ['#6495ED', '#4BC0C0'],
+            borderWidth: 1
+        }]
+    };
+
+  
+    var employeeIncreaseChart = new Chart(document.getElementById('employeeIncreaseChart'), {
+        type: 'bar',
+        data: increaseData,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
 
           
            
@@ -280,32 +332,26 @@
                     <p class="card-subtitle">Best Employees</p>
                 </div>
                 <div>
-                    <select class="form-select">
-                        <option value="1">March 2024</option>
-                        <option value="2">April 2024</option>
-                        <option value="3">May 2024</option>
-                        <option value="4">June 2024</option>
-                    </select>
+                    
                 </div>
             </div>
             <div class="table-responsive">
                 <table class="table align-middle text-nowrap mb-0">
                     <thead>
                         <tr class="text-muted fw-semibold">
-                            <th scope="col" class="ps-0">Employee</th>
-                            <th scope="col">Department</th>
+                            <th scope="col" class="ps-0"></th>
+                            <th scope="col">Designation</th> 
                             <th scope="col">Award Category</th> 
                             <th scope="col">Month</th>
                         </tr>
                     </thead>
                     <tbody class="border-top">
-    @foreach ($topPerformers as $performer)
+                    @foreach ($topPerformers as $performer)
     <tr>
         <td class="ps-0">
             <div class="d-flex align-items-center">
                 <div class="me-2 pe-1">
-                <img src="{{ $award->employee->profile_picture_url ?? asset('assets/logo.png') }}" class="rounded-circle" width="40" height="40" alt="Profile Picture" />
-
+                    <img src="{{ $performer['profile_picture_url'] ?? asset('assets/logo.png') }}" class="rounded-circle" width="40" height="40" alt="Profile Picture" />
                 </div>
                 <div>
                     <h6 class="fw-semibold mb-1">{{ $performer['name'] }}</h6>
@@ -314,7 +360,7 @@
             </div>
         </td>
         <td>
-            <p class="mb-0 fs-3">{{ $performer['department'] }}</p>
+            <p class="mb-0 fs-3">{{ $performer['designation'] }}</p> 
         </td>
         <td>
             <p class="mb-0 fs-3">{{ $performer['award_category'] }}</p>
@@ -323,7 +369,8 @@
             <p class="fs-3 text-dark mb-0">{{ $performer['month'] }}</p>
         </td>
     </tr>
-    @endforeach
+@endforeach
+
 </tbody>
 
                 </table>
@@ -436,8 +483,8 @@ const awardChart = new Chart(ctxAward, {
         datasets: [{
             label: 'Total Awards',
             data: {!! json_encode($awardCounts->pluck('total')) !!},
-            backgroundColor: '#36A2EB', 
-            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: '#6495ED', 
+            borderColor: '#6495ED',
             borderWidth: 1
         }]
     },

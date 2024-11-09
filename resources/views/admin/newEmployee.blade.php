@@ -162,8 +162,8 @@
 
 
                             <div class="mb-3">
-                                <label for="nhif" class="form-label">NHIF</label>
-                                <input type="text" class="form-control" id="nhif" name="nhif" placeholder="NHIF" required>
+                                <label for="nhif" class="form-label">SHIF</label>
+                                <input type="text" class="form-control" id="nhif" name="nhif" placeholder="SHIF" required>
                             </div>
 
                             <div class="mb-3">

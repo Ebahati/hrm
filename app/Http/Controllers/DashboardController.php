@@ -61,41 +61,42 @@ class DashboardController extends Controller
         $newFilesAdded = $filesThisYear - $filesLastYear; 
 $percentageIncrease = ($filesLastYear > 0) ? (($newFilesAdded / $filesLastYear) * 100) : 0;
 
-  
-$totalAwards = Award::count();
-
-
-
     $totalAwards = Award::count(); 
-    $topPerformers = Award::with('employee') 
-        ->select('employee_id', 'award_category', 'date') 
-        ->groupBy('employee_id', 'award_category', 'date') 
-        ->get()
-        ->map(function($award) {
-            return [
-                'name' => $award->employee->name,
-                'role' => $award->employee->role,
-                'department' => $award->employee->department,
-                'award_category' => $award->award_category,
-                'month' => $award->date, 
-                'profile_picture_url' => $award->employee->profile_picture_url, 
-            
-            ];
-        });
+      $topPerformers = Award::with('employee.designation') 
+    ->select('employee_id', 'award_category', 'date')
+    ->groupBy('employee_id', 'award_category', 'date')
+    ->get()
+    ->map(function($award) {
+        return [
+            'name' => $award->employee->name,
+            'role' => $award->employee->role,
+            'designation' => $award->employee->designation->name, 
+            'award_category' => $award->award_category,
+            'month' => $award->date,
+            'profile_picture_url' => $award->employee->profile_picture_url,
+        ];
+    });
+
 
       
        
-            $awardCounts = Award::select('award_category', \DB::raw('count(*) as total'))
+    $awardCounts = Award::select('award_category', \DB::raw('count(*) as total'))
                 ->groupBy('award_category')
                 ->get();
         
-           
+    
+    $totalEmployees = Employee::count();
+
+   
+    $maleCount = Employee::where('gender', 'Male')->count();
+    $femaleCount = Employee::where('gender', 'Female')->count();     
 
       
         return view('admin.dashboard', compact('totalEmployees', 'increase', 'percentageIncrease', 
             'totalEmployeesLastYear', 'totalNotices', 'latestNotice', 'noticesThisMonth', 
             'holidaysCount', 'publishedCount', 'totalPublishedHolidays', 'totalActiveNotices', 
-            'totalPublished', 'dates', 'noticesCount', 'holidaysCount','totalFiles','filesThisYear', 'filesLastYear', 'newFilesAdded','totalAwards','topPerformers','awardCounts'));
+            'totalPublished', 'dates', 'noticesCount', 'holidaysCount','totalFiles','filesThisYear', 
+            'filesLastYear', 'newFilesAdded','totalAwards','topPerformers','awardCounts','totalEmployees', 'maleCount', 'femaleCount'));
     }
 
    
