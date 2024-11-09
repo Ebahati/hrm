@@ -78,20 +78,9 @@
         </div>
     </div>
 </div>
-
-            <div class="item">
-              <div class="card border-0 zoom-in bg-info-subtle shadow-none">
-                <div class="card-body">
-                  <div class="text-center">
-                    <img src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/images/svgs/icon-connect.svg" width="50" height="50" class="mb-3" alt="modernize-img" />
-                    <p class="fw-semibold fs-3 text-info mb-1">Reports</p>
-                    <h5 class="fw-semibold text-info mb-0">59</h5>
-                  </div>
-                </div>
-              </div>
-            </div>
+           
           </div>
-          <!--  Row 1 -->
+        
           <div class="row">
             <div class="col-lg-8 d-flex align-items-stretch">
               <div class="card w-100">

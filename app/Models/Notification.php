@@ -13,7 +13,8 @@ class Notification extends Model
         'employee_id',
         'title',
         'message',
-        'payslip_url'
+        'payslip_url',
+        'read',
     ];
 
   
@@ -22,10 +23,10 @@ class Notification extends Model
         return $this->belongsTo(Employee::class);
     }
 
-   
-public function markAsRead()
-{
-    $this->update(['read' => true]);
-}
+    public function markAsRead()
+    {
+       
+        $this->update(['read' => 1]);
+    }
 
 }

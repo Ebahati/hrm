@@ -465,40 +465,47 @@ public function sendSalaryNotification($employee, $payslipUrl)
 {
     Notification::create([
         'employee_id' => $employee->employee_id,  
+        'title' => 'Salary Paid',
         'message' => 'Check your Account.',
         'payslip_url' => $payslipUrl,
     ]);
 }
 
 
-public function markAsRead($id)
-{
-    $notification = Notification::findOrFail($id);
-
-    if ($notification->employee_id == auth()->user()->employee_id) {
-        $notification->update(['read' => true]);
-        return response()->json(['message' => 'Notification marked as read']);
-    }
-
-    return response()->json(['message' => 'Unauthorized action'], 403);
-}
-
 
 public function deleteNotification($id)
 {
+   
     $notification = Notification::findOrFail($id);
-
     
-    if ($notification->employee_id == auth()->user()->employee_id) {
-        $notification->delete();
-        return response()->json(['message' => 'Notification deleted']);
-    }
 
-    return response()->json(['message' => 'Unauthorized action'], 403);
+    $notification->delete();
+    
+   
+    return redirect()->route('dashboard')->with('success', 'Notification deleted successfully.');
+}
+public function markAsRead($notificationId)
+{
+    $notification = Notification::findOrFail($notificationId);
+    $notification->read = true;
+    $notification->save();
+ 
+    return redirect()->back()->with('success', 'Notification marked as read.');
+}
+
+public function unreadCount()
+{
+    $unreadCount = Notification::where('read', false)->count();
+    return response()->json(['unreadCount' => $unreadCount]);
 }
 
 
 }
+    
+
+
+
+
 
 
 

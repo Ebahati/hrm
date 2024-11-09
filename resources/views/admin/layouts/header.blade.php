@@ -75,8 +75,8 @@
                 </a>
                 <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-center">
                  
-<li class="nav-item nav-icon-hover-bg rounded-circle dropdown">
-    <a class="nav-link position-relative" href="javascript:void(0)" id="drop2" aria-expanded="false">
+                <li class="nav-item nav-icon-hover-bg rounded-circle dropdown">
+    <a class="nav-link position-relative" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="far fa-bell"></i>
         @if($unreadNotificationsCount > 0)
             <div class="notification bg-primary rounded-circle">
@@ -91,24 +91,47 @@
             <span class="badge text-bg-primary rounded-4 px-3 py-1 lh-sm">{{ $unreadNotificationsCount }} new</span>
         </div>
         <div class="message-body" data-simplebar>
-            @forelse($notifications as $notification)
-                <a href="javascript:void(0)" class="dropdown-item" id="notification-{{ $notification->id }}" data-notification-id="{{ $notification->id }}">
-                    <div class="w-100">
-                        <h6 class="fw-semibold">{{ $notification->title }}</h6>
-                        <span class="text-muted">{{ $notification->message }}</span>
-                        
-                        @if($notification->payslip_url)
-                            <a href="{{ $notification->payslip_url }}" class="btn btn-sm btn-primary mt-2" download>Download Payslip</a>
-                        @endif
-                    </div>
-                 
-                    <div class="notification-options" style="display: none;">
-                        <button class="btn btn-sm btn-danger mt-2 delete-btn" data-notification-id="{{ $notification->id }}">Delete</button>
-                    </div>
-                </a>
-            @empty
-                <div class="dropdown-item text-muted">No new notifications</div>
-            @endforelse
+        @forelse($notifications as $notification)
+        <a href="javascript:void(0)" 
+   class="dropdown-item {{ $notification->read ? 'read' : 'unread' }}" 
+   id="notification-{{ $notification->id }}" 
+   data-notification-id="{{ $notification->id }}">
+    <div class="w-100">
+        <h6 class="fw-semibold">{{ $notification->title }}</h6>
+        <span class="text-muted">{{ $notification->message }}</span>
+
+        @if($notification->payslip_url)
+        <a href="{{ $notification->payslip_url }}" class="btn btn-sm btn-link text-muted mt-0" download>Download Payslip</a>
+
+        @endif
+
+        <!-- Mark as Read -->
+        <form action="{{ route('markNotificationAsRead', $notification->id) }}" method="POST" style="display:inline;" id="mark-read-form-{{ $notification->id }}">
+    @csrf
+    @method('POST') 
+    <button type="submit" style="display:none" id="mark-read-button-{{ $notification->id }}"></button>
+    <a href="javascript:void(0)" onclick="event.preventDefault(); document.getElementById('mark-read-form-{{ $notification->id }}').submit();" class= "text-muted">
+       I Mark as Read
+    </a>
+</form>
+
+        <!-- Delete -->
+        <form action="{{ route('deleteNotification', $notification->id) }}" method="POST" style="display:inline;" id="delete-form-{{ $notification->id }}">
+            @csrf
+            @method('DELETE')
+            <button type="submit" style="display:none" id="delete-button-{{ $notification->id }}"></button>
+            <a href="javascript:void(0)" onclick="confirmDelete({{ $notification->id }})" class="text-muted">
+                I Delete
+            </a>
+        </form>
+    </div>
+</a>
+
+@empty
+    <div class="dropdown-item text-muted">No new notifications</div>
+@endforelse
+
+
         </div>
     </div>
 </li>
@@ -201,67 +224,48 @@
                    
           </nav>
         </div>
-        <script>
+<script>
+
+
+
+
+
+function updateUnreadCount() {
    
-    document.querySelectorAll('.dropdown-item').forEach(item => {
-        item.addEventListener('mouseenter', () => {
-            const options = item.querySelector('.notification-options');
-            if (options) {
-                options.style.display = 'block'; 
-            }
-        });
-
-        item.addEventListener('mouseleave', () => {
-            const options = item.querySelector('.notification-options');
-            if (options) {
-                options.style.display = 'none'; 
-            }
-        });
-    });
-
-  
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.stopPropagation(); 
-            const notificationId = button.dataset.notificationId;
-
-           
-            if (confirm('Are you sure you want to delete this notification?')) {
-                deleteNotification(notificationId);
-            }
-        });
-    });
-
-   
-    function deleteNotification(notificationId) {
-        fetch(`/notification/${notificationId}/delete`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
+    fetch('/notifications/unread-count')
         .then(response => response.json())
         .then(data => {
-            console.log(data.message);
-
-        
-            const notificationItem = document.querySelector(`#notification-${notificationId}`);
-            if (notificationItem) {
-                notificationItem.remove();
-            }
-
-           
-            const unreadCount = document.querySelector('.notification');
-            if (unreadCount) {
-                unreadCount.textContent = Math.max(0, parseInt(unreadCount.textContent) - 1);
+            if (data.unreadCount >= 0) {
+               
+                const notificationCountElement = document.querySelector('.notification');
+                if (notificationCountElement) {
+                    if (data.unreadCount > 0) {
+                        notificationCountElement.innerText = data.unreadCount;
+                    } else {
+                        notificationCountElement.style.display = 'none';
+                    }
+                }
             }
         })
-        .catch(error => {
-            console.error('Error deleting notification:', error);
-        });
+        .catch(error => console.error('Error:', error));
+}
+
+
+
+       function confirmDelete(notificationId) {
+  
+    const confirmAction = confirm("Are you sure you want to delete this notification?");
+    if (confirmAction) {
+       
+        const form = document.getElementById(`delete-form-${notificationId}`);
+        const button = document.getElementById(`delete-button-${notificationId}`);
+        button.click(); 
     }
+}
+
 </script>
+
+
       </header>
   
         

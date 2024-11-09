@@ -36,7 +36,7 @@
             </li>
            
             <li class="sidebar-item">
-              <a class="sidebar-link" href="#" id="get-url" aria-expanded="false">
+              <a class="sidebar-link" href="{{ route('dashboard') }}" id="get-url" aria-expanded="false">
                 <span>
                 <i class="fas fa-camera"></i> 
 
@@ -270,41 +270,9 @@
                     <span class="hide-menu">Holidays and Events</span>
                   </a>
                 </li>
-                @endif
-                @if ($isSuperAdmin)
-            <li class="sidebar-item">
-              <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
-                <span class="d-flex">
-                <i class="fas fa-user-check fs-4"></i>
-
-
-
-                </span>
-                <span class="hide-menu">Attendance</span>
-              </a>
-              <ul aria-expanded="false" class="collapse first-level">
-                <li class="sidebar-item">
-                  <a href="{{ route('manageAttendance') }}" class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-clipboard-list fs-4"></i>
-
-                    </div>
-                    <span class="hide-menu">Manage Attendance</span>
-                  </a>
-                </li>
-                @endif
-                @if ($isAdmin)
-                <li class="sidebar-item">
-                <a href="{{ route('attendanceReports') }}"  class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-chart-line fs-4"></i>
-
-                    </div>
-                    <span class="hide-menu">Reports</span>
-                  </a>
-                </li>
-              </ul>
-            </li>
+               
+            
+                
             @endif
             @if ($isSuperAdmin)
             <li class="sidebar-item">

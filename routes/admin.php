@@ -49,8 +49,10 @@ Route::post('/pay-salary', [SalaryController::class, 'paySalary'])->name('submit
 Route::get('/payment-list', [SalaryController::class, 'showPaymentList'])->name('paymentList');
 
 // notification 
-Route::post('/notification/{id}/read', [SalaryController::class, 'markAsRead'])->name('notification.read');
-Route::delete('/notification/{id}/delete', [SalaryController::class, 'deleteNotification'])->name('notification.delete');
+
+Route::delete('/notifications/{id}/delete', [SalaryController::class, 'deleteNotification'])->name('deleteNotification');
+Route::post('/notifications/mark-read/{notification}', [SalaryController::class, 'markAsRead'])->name('markNotificationAsRead');
+Route::get('/notifications/unread-count', [SalaryController::class, 'unreadCount']);
 
 // Bonus
 Route::get('/bonuses', [SalaryController::class, 'createBonusForm'])->name('addBonus');
@@ -80,18 +82,6 @@ Route::post('/loan/{id}/update', [LoanController::class, 'update'])->name('loans
 
 
 Route::post('/loans/{id}/clear', [LoanController::class, 'clearLoan'])->name('loans.clear');
-//attendance
-Route::get('/manage-attendance', function () {
-    return view('admin.manageAttendance'); 
-})->name('manageAttendance');
-
-Route::get('/attendance-reports', function () {
-    return view('admin.attendanceReports'); 
-})->name('attendanceReports');
-
-Route::get('/edit-attendance', function () {
-    return view('admin.editAttendance'); 
-})->name('editAttendance');
 
 //expense
 Route::post('/expense/store', [ExpenseController::class, 'store'])->name('expense.store');
