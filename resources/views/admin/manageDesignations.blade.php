@@ -49,7 +49,7 @@
                                         <tr>
                                             <td>{{ $designation->id }}</td>
                                             <td>{{ $designation->name }}</td>
-                                            <td>{{ optional($designation->department)->name ?? 'N/A' }}</td> <!-- Adjust if you have a relationship -->
+                                            <td>{{ optional($designation->department)->name ?? 'N/A' }}</td> 
                                             <td>{{ $designation->created_at->format('Y-m-d') }}</td>
                                             <td>
                                                 <div class="d-flex align-items-center gap-3">

@@ -6,7 +6,7 @@
 
 <div class="body-wrapper">
     <div class="container-fluid">
-        <!-- Header Card -->
+       
         <div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
             <div class="card-body px-4 py-3">
                 <div class="row align-items-center">
@@ -30,10 +30,10 @@
             </div>
         </div>
 
-        <!-- Row -->
+  
         <div class="row">
             <div class="col-12">
-                <!-- Attendance Report Form -->
+          
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Generate Attendance Report</h4>
@@ -41,7 +41,7 @@
                     <form class="form-horizontal r-separator" method="GET" action="#">
                         <div class="card-body">
 
-                            <!-- Date Range -->
+                       
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
                                     <label for="from_date" class="col-3 text-end col-form-label">From Date</label>
@@ -60,7 +60,7 @@
                                 </div>
                             </div>
 
-                            <!-- Employee Selection -->
+                     
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
                                     <label for="employee_id" class="col-3 text-end col-form-label">Employee Name</label>
@@ -75,7 +75,7 @@
                                 </div>
                             </div>
 
-                            <!-- Attendance Status -->
+                      
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
                                     <label for="status" class="col-3 text-end col-form-label">Status</label>
@@ -103,7 +103,7 @@
                 </div>
             </div>
         </div>
-        <!-- End Row -->
+      
     </div>
 </div>
 

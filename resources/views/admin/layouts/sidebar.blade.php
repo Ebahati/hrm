@@ -1,13 +1,21 @@
-@if(Auth::check())
-        <!-- Retrieve the authenticated user -->
-        @php
-            $user = Auth::user();
-        @endphp
-<!-- Sidebar Start -->
+@php
+    $user = Auth::user();
+    $isAuthenticated = isset($user);
+
+    // Checks for specific roles based on employee_id patterns
+    $isEmployee = $isAuthenticated && Str::startsWith($user->employee_id, 'EMP');
+    $isSubAdmin = $isAuthenticated && Str::startsWith($user->employee_id, 'SBA');
+    $isSuperAdmin = $isAuthenticated && !$isEmployee && !$isSubAdmin;
+
+    // Admin privileges include both SuperAdmin and SubAdmin
+    $isAdmin = $isSuperAdmin || $isSubAdmin;
+@endphp
+
+
+
+
 <aside class="left-sidebar with-vertical">
-      <div><!-- ---------------------------------- -->
-        <!-- Start Vertical Layout Sidebar -->
-        <!-- ---------------------------------- -->
+      <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
         <a href="{{ route('dashboard') }}" class="text-nowrap logo-img">
           
@@ -21,16 +29,12 @@
 
         <nav class="sidebar-nav scroll-sidebar" data-simplebar>
           <ul id="sidebarnav">
-            <!-- ---------------------------------- -->
-            <!-- Home -->
-            <!-- ---------------------------------- -->
+           
             <li class="nav-small-cap">
             
               <span class="hide-menu">Home</span>
             </li>
-            <!-- ---------------------------------- -->
-            <!-- Dashboard -->
-            <!-- ---------------------------------- -->
+           
             <li class="sidebar-item">
               <a class="sidebar-link" href="#" id="get-url" aria-expanded="false">
                 <span>
@@ -63,6 +67,7 @@
                     <span class="hide-menu">New upload</span>
                   </a>
                 </li>
+              
                 <li class="sidebar-item">
                   <a href="{{ route('manageFiles') }}" class="sidebar-link">
                     <div class="round-16 d-flex align-items-center justify-content-center">
@@ -74,8 +79,6 @@
                 </li>
               </ul>
             </li>
-            @if (strpos($user->employee_id, 'EMP') === 0)
-            <!-- Links for Employees -->
             <li class="sidebar-item">
               <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
                 <span class="d-flex">
@@ -85,9 +88,8 @@
                 <span class="hide-menu">Leave</span>
               </a>
               <ul aria-expanded="false" class="collapse first-level">
-                
-             
-                <li class="sidebar-item">
+            
+              <li class="sidebar-item">
                   <a href="{{ route('addLeave') }}"class="sidebar-link">
                     <div class="round-16 d-flex align-items-center justify-content-center">
                     <i class="fas fa-paper-plane fs-4"></i>
@@ -105,8 +107,39 @@
                     <span class="hide-menu">Leave Status</span>
                   </a>
                 </li>
-            @else
-             <!-- Links for SuperAdmins -->
+             
+                @if ($isSuperAdmin)
+              <li class="sidebar-item">
+                  <a href="{{ route('manageLeave') }}" class="sidebar-link">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-user-cog fs-4"></i>
+
+                    </div>
+                    <span class="hide-menu">Manage leave application</span>
+                  </a>
+                </li>
+                @endif
+                @if ($isAdmin)
+                <li class="sidebar-item">
+                <a href="{{ route('leaveReports') }}"  class="sidebar-link">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-calendar-check fs-4"></i>
+
+
+                    </div>
+                    
+                    <span class="hide-menu">leave reports</span>
+                  </a>
+                </li>
+               
+               
+               
+              </ul>
+            </li>
+           
+              
+                @endif
+                @if ($isSuperAdmin)
             <li class="sidebar-item">
               <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
                 <span class="d-flex">
@@ -136,6 +169,7 @@
                 </li>
               </ul>
             </li>
+          
             <li class="sidebar-item">
               <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
                 <span class="d-flex">
@@ -154,6 +188,7 @@
                     <span class="hide-menu">Salary</span>
                   </a>
                 </li>
+               
                 <li class="sidebar-item">
                   <a href="{{ route('salaryList') }}" class="sidebar-link">
                     <div class="round-16 d-flex align-items-center justify-content-center">
@@ -165,13 +200,13 @@
                 </li>
                
                 <li class="sidebar-item">
-                  <a href="{{ route('incrementList') }}"  class="sidebar-link">
+                  <a href="{{ route('paymentList') }}"  class="sidebar-link">
                     <div class="round-16 d-flex align-items-center justify-content-center">
                     <i class="fas fa-file-invoice-dollar fs-4"></i>
 
 
                     </div>
-                    <span class="hide-menu">Increment List</span>
+                    <span class="hide-menu">Payment List</span>
                   </a>
                 </li>
                 <li class="sidebar-item">
@@ -181,15 +216,6 @@
 
                     </div>
                     <span class="hide-menu">Payment</span>
-                  </a>
-                </li>
-                <li class="sidebar-item">
-                 <a href="{{ route('generate.payslip') }}" class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-file-invoice fs-4"></i>
-
-                    </div>
-                    <span class="hide-menu">Payslips</span>
                   </a>
                 </li>
                 <li class="sidebar-item">
@@ -225,6 +251,27 @@
                 </li>
               </ul>
             </li>
+            @endif
+            @if ($isAdmin)
+                <li class="sidebar-item">
+                 <a href="{{ route('generate.payslip') }}" class="sidebar-link">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-file-invoice fs-4"></i>
+
+                    </div>
+                    <span class="hide-menu">Payslips</span>
+                  </a>
+                </li>
+                <li class="sidebar-item">
+                  <a href="manage-holiday" class="sidebar-link">
+                    <div class="round-16 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-clock fs-4"></i>
+                    </div>
+                    <span class="hide-menu">Holidays and Events</span>
+                  </a>
+                </li>
+                @endif
+                @if ($isSuperAdmin)
             <li class="sidebar-item">
               <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
                 <span class="d-flex">
@@ -245,6 +292,8 @@
                     <span class="hide-menu">Manage Attendance</span>
                   </a>
                 </li>
+                @endif
+                @if ($isAdmin)
                 <li class="sidebar-item">
                 <a href="{{ route('attendanceReports') }}"  class="sidebar-link">
                     <div class="round-16 d-flex align-items-center justify-content-center">
@@ -256,6 +305,8 @@
                 </li>
               </ul>
             </li>
+            @endif
+            @if ($isSuperAdmin)
             <li class="sidebar-item">
               <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
                 <span class="d-flex">
@@ -276,6 +327,7 @@
                     <span class="hide-menu">Create Expense</span>
                   </a>
                 </li>
+               
                 <li class="sidebar-item">
                   <a href="{{ route('expenseList') }}" class="sidebar-link">
                     <div class="round-16 d-flex align-items-center justify-content-center">
@@ -287,29 +339,7 @@
                 </li>
               </ul>
             </li>
-            
-                
-                <li class="sidebar-item">
-                  <a href="{{ route('manageLeave') }}" class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-user-cog fs-4"></i>
-
-                    </div>
-                    <span class="hide-menu">Manage leave application</span>
-                  </a>
-                </li>
-                <li class="sidebar-item">
-                <a href="{{ route('leaveReports') }}"  class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-calendar-check fs-4"></i>
-
-
-                    </div>
-                    <span class="hide-menu">leave reports</span>
-                  </a>
-                </li>
-              </ul>
-            </li>
+          
             <li class="sidebar-item">
               <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
                 <span class="d-flex">
@@ -339,13 +369,12 @@
                 </li>
               </ul>
             </li>
+            
             <li class="sidebar-item">
               <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
                 <span class="d-flex">
                 <i class="fas fa-bullhorn fs-4"></i>
-
-
-                </span>
+              </span>
                 <span class="hide-menu">Notice board</span>
               </a>
               <ul aria-expanded="false" class="collapse first-level">
@@ -362,8 +391,6 @@
                   <a href="{{ route('manageNotice') }}" class="sidebar-link">
                     <div class="round-16 d-flex align-items-center justify-content-center">
                     <i class="fas fa-edit fs-4"></i>
-
-
                     </div>
                     <span class="hide-menu">Manage notice</span>
                   </a>
@@ -372,17 +399,10 @@
               </ul>
             </li>
           
-            <li class="sidebar-item">
-                  <a href="manage-holiday" class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                    <i class="fas fa-clock fs-4"></i>
-
-
-                    </div>
-                    <span class="hide-menu">Holidays and Events</span>
-                  </a>
-                </li>
-            <li class="sidebar-item">
+           
+                @endif
+                @if ($isSuperAdmin)
+                <li class="sidebar-item">
               <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
                 <span class="d-flex">
                 <i class="fas fa-cog fs-4"></i>
@@ -411,35 +431,38 @@
                   </a>
                 </li>
               
-          
-               
-              
-           
-                 
             
               </ul>
             </li>
-
            
-           
+            
+            @endif
         </nav>
-        @endif
-        @else
+      
        <div class="fixed-profile p-3 mx-4 mb-2 bg-secondary-subtle rounded mt-3">
     <div class="hstack gap-3">
         <div class="john-img">
             <img src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/images/profile/user-1.jpg" class="rounded-circle" width="40" height="40" alt="modernize-img" />
         </div>
         <div class="john-title">
-            <h6 class="mb-0 fs-4 fw-semibold">{{ Auth::user()->employee_id }}</h6>
-            <span class="fs-2">{{ Auth::user()->designation }}</span>
+        @if (Auth::check())
+    <h6 class="mb-0 fs-4 fw-semibold">{{ Auth::user()->employee_id }}</h6>
+@else
+    <h6 class="mb-0 fs-4 fw-semibold">No Employee ID available</h6>
+@endif
+<span class="fs-2">
+    {{ Auth::check() && Auth::user()->employee && Auth::user()->employee->designation ? Auth::user()->employee->designation->name : 'No Designation' }}
+</span>
+
+
+
         </div>
         <a href="{{ route('login') }}" class="border-0 bg-transparent text-primary ms-auto" tabindex="0" aria-label="logout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Logout">
             <i class="fas fa-power-off fs-6"></i>
         </a>
     </div>
 </div>
-@endif
+
 
        
       </div>

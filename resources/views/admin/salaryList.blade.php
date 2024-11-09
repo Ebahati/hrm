@@ -28,7 +28,7 @@
             </div>
           </div>
           <div class="datatables">
-            <!-- start File export -->
+           
             <div class="card">
               <div class="card-body">
                 <div class="mb-2">
@@ -45,7 +45,7 @@
             <th>Bonus</th>
             <th>Medical Allowance</th>
             <th>House Allowance</th>
-            <th>NHIF</th>
+            <th>SHIF</th>
             <th>NSSF</th>
             <th>Tax</th>
             <th>Deductions</th>
@@ -60,7 +60,7 @@
             <tr>
                 <td>{{ $employee->employee_id }}</td> 
                 <td>{{ $employee->name }}</td>
-                <td>{{ $employee->designation }}</td>
+                <td>{{ $employee->designation_name }}</td>
                 <td>{{ $employee->basic_salary }}</td>
                 <td>{{ $employee->bonus }}</td>
                 <td>{{ $employee->medical_allowance }}</td>
@@ -93,7 +93,7 @@
 
 
             </div>
-            <!-- end File export -->
+           
           </div>
         </div>
       </div>

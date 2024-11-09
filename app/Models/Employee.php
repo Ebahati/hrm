@@ -8,6 +8,10 @@ class Employee extends Model
 {
     use HasFactory;
 
+protected $primaryKey = 'employee_id';  
+
+
+public $incrementing = false; 
     protected $fillable = [
         'employee_id',
         'name',
@@ -28,7 +32,7 @@ class Employee extends Model
         'branch_name',
         'branch_code',
         'account_number',
-        'designation',
+        'designation_id',
         'work_permit',
         'joining_date',
     ];
@@ -41,19 +45,29 @@ class Employee extends Model
 
 public function bonuses()
 {
-    return $this->hasMany(Bonus::class, 'employee_id');
+    return $this->hasMany(Bonus::class, 'employee_id', 'employee_id');
 }
 
 public function deductions()
 {
-    return $this->hasMany(Deduction::class, 'employee_id');
-}
-    
-
+    return $this->hasMany(Deduction::class, 'employee_id', 'employee_id');  
+}   
 
 public function salary()
 {
-    return $this->hasOne(Salary::class);
+    return $this->hasOne(Salary::class, 'employee_id', 'employee_id');
 }
 
+
+public function salaryPayments()
+{
+    return $this->hasMany(SalaryPayment::class, 'employee_id', 'employee_id');
+}
+
+
+
+public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 }

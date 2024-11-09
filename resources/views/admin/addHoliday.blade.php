@@ -28,17 +28,42 @@
                 </div>
             </div>
         </div>
-        <!-- Row -->
+    
         <div class="row">
             <div class="col-12">
-                <!-- start Add Holiday Form -->
+              
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Add New Holiday</h4>
+                          
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+            
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+            
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                         <form action="{{ isset($holiday) ? route('updateHoliday', $holiday->id) : route('storeHoliday') }}" method="POST">
     @csrf
     @if(isset($holiday))
-        @method('PUT') <!-- Use PUT method for updating -->
+        @method('PUT')
     @endif
                         <form class="form-horizontal r-separator" method="POST" action="{{ route('storeHoliday') }}">
                             @csrf 
@@ -94,10 +119,10 @@
                         </form>
                     </div>
                 </div>
-                <!-- end Add Holiday Form -->
+           
             </div>
         </div>
-        <!-- End Row -->
+      
     </div>
 </div>
 

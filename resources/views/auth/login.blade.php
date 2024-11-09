@@ -1,86 +1,228 @@
+<!DOCTYPE HTML>
+<html dir="ltr">
 
-@extends('auth.layout')
+<meta http-equiv="content-type" content="text/html;charset=iso-8859-1"/>
+<head profile="http://www.w3.org/2005/10/profile"><title>Jamuki</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
+    <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <link href="{{ asset('assets/themes/hxbm/azia.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('assets/themes/hxbm/lib/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('assets/themes/hxbm/lib/ionicons/css/ionicons.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('assets/themes/hxbm/lib/typicons.font/typicons.css')}}" rel="stylesheet" type="text/css">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/logo.png') }}" />
+    <link href="{{ asset('assets/cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css')}}"
+          rel="stylesheet"
+          type="text/css">
+    <link href="{{asset('assets/swiper/swiper.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets/main/custom_js/toastr/toastr.css') }}">
+    <link href="{{ asset('assets/themes/hxbm/slider/style1.css')}}" rel="stylesheet" type="text/css">
+    <script language="javascript" type="text/javascript"
+            src="{{ asset('assets/company/0/js_cache/0/JsHttpRequest.js')}}"></script>
+    <script language="javascript" type="text/javascript"
+            src="{{ asset('assets/company/0/js_cache/0/behaviour.js')}}"></script>
+    <script language="javascript" type="text/javascript"
+            src="{{ asset('assets/company/0/js_cache/0/utils.js')}}"></script>
+    <script language="javascript" type="text/javascript"
+            src="{{ asset('assets/company/0/js_cache/0/inserts.js')}}"></script>
+    <script language="javascript" type="text/javascript"
+            src="{{ asset('assets/company/0/js_cache/0/login.js')}}"></script>
+    <style>
+        .mobile {
+            display: none;
+        }
 
-@section('title', 'Dashboard')
+        @media only screen and (max-width: 768px) {
+            .mobile {
+                display: block;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="{{ asset('assets/main/custom_js/toastr/toastr.css') }}">
+</head>
+<body id="loginscreen">
+<div class="az-signup-wrapper">
+    <div class="az-column-signup-left"
+         style="background-image: url('{{ asset('assets/themes/hxbm/slider/bgc77b.webp') }}');">
+        <div>
+            <section class="hero-slider hero-style">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <a href="https://shiva.co.ke/" target="_blank">
+                                <div class="slide-inner slide-bg-image"
+                                     data-background="{{asset('assets/ads/001c77b.jpg')}}"></div>
+                            </a>
+                        </div>
+                      
+                        <div class="swiper-slide">
+                            <a href="https://shiva.co.ke/" target="_blank">
+                                <div class="slide-inner slide-bg-image"
+                                     data-background="{{asset('assets/ads/002c77b.jpg')}}">
+                                </div>
+                            </a>
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://shiva.co.ke/" target="_blank">
+                                <div class="slide-inner slide-bg-image"
+                                     data-background="{{asset('assets/ads/01c77b.jpg')}}">
+                                </div>
+                            </a>
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://shiva.co.ke/" target="_blank">
+                                <div class="slide-inner slide-bg-image"
+                                     data-background="{{asset('assets/ads/02c77b.jpg')}}">
+                                </div>
+                            </a>
 
-@section('content')
-  <div id="main-wrapper" class="auth-customizer-none">
-    <div class="position-relative overflow-hidden radial-gradient min-vh-100 w-100">
-      <div class="position-relative z-index-5">
-        <div class="row">
-        <div class="col-xl-7 col-xxl-8">
-    <a href="#" class="text-nowrap logo-img d-block px-4 py-9 w-100">
-        <img src="{{ asset('assets/logo.png') }}" class="dark-logo" alt="Logo-Dark" width="150" height="50" />
-        <img src="{{ asset('assets/logo.png') }}" class="light-logo" alt="Logo-light" width="150" height="50" />
-    </a>
-    <div class="d-none d-xl-flex align-items-center justify-content-center h-n80">
-        <img src="{{ asset('assets/login-security.svg') }}" alt="modernize-img" class="img-fluid" width="500" height="auto">
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://shiva.co.ke/" target="_blank">
+                                <div class="slide-inner slide-bg-image"
+                                     data-background="{{asset('assets/ads/3c77b.jpg')}}">
+                                </div>
+                            </a>
+
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://shiva.co.ke/" target="_blank">
+                                <div class="slide-inner slide-bg-image"
+                                     data-background="{{asset('assets/ads/4c77b.jpg')}}">
+                                </div>
+                            </a>
+
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://shiva.co.ke/" target="_blank">
+                                <div class="slide-inner slide-bg-image"
+                                     data-background="{{asset('assets/ads/5c77b.jpg')}}">
+                                </div>
+                            </a>
+
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://shiva.co.ke/" target="_blank">
+                                <div class="slide-inner slide-bg-image"
+                                     data-background="{{asset('assets/ads/6c77b.jpg')}}">
+                                </div>
+                            </a>
+
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://shiva.co.ke/" target="_blank">
+                                <div class="slide-inner slide-bg-image"
+                                     data-background="{{asset('assets/ads/7c77b.jpg')}}">
+                                </div>
+                            </a>
+
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://shiva.co.ke/" target="_blank">
+                                <div class="slide-inner slide-bg-image"
+                                     data-background="{{asset('assets/ads/8c77b.jpg')}}">
+                                </div>
+                            </a>
+
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://shiva.co.ke/" target="_blank">
+                                <div class="slide-inner slide-bg-image"
+                                     data-background="{{asset('assets/ads/advert_gibc77b.jpg')}}">
+                                </div>
+                            </a>
+
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://shiva.co.ke/" target="_blank">
+                                <div class="slide-inner slide-bg-image"
+                                     data-background="{{asset('assets/ads/advert_gib1c77b.jpg')}}">
+                                </div>
+                            </a>
+
+                        </div>
+                        <div class="swiper-slide">
+                            <a href="https://shiva.co.ke/" target="_blank">
+                                <div class="slide-inner slide-bg-image"
+                                     data-background="{{asset('assets/ads/advert_gib2c77b.jpg')}}">
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <div class="az-column-signup"><p style="text-align: right;"><a target="_blank" class=""
+                                                                   href="https://ecobillafrica.com/">
+                                                                   <img src="{{asset('assets/logo.png')}}" alt="Jamuki" height="120" onload="fixPNG(this)" border="0" style="display: block; margin-left: auto; margin-right: auto;"
+                    onload="fixPNG(this)" border="0"></a><br/>
+        </p>
+       
+        <div id="login">
+            <div class="az-signup-header"><h4>Hey there! Welcome</h4>
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
+                    <div class="form-group">
+                        <label>User Name</label>
+                        <input id="employee_id" type="text" name="employee_id" class="form-control" placeholder="Enter your username" required autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+                    </div>
+                    <input onclick="set_fullmode();" type="submit" value="&nbsp;&nbsp;Login"
+                           class="btn btn-primary btn-rounded btn-block"/>
+                    <div class="pt-3 text-danger" id="log_msg"></div>
+                    <br>
+                    <a href="{{ route('password.request') }}" class="text-muted">Forgot Password?</a><br>
+                    <a href="{{ route('register') }}" class="text-muted">Create Account</a>
+
+                   
+
+                </form>
+            </div>
+            <div class="az-signup-footer">
+                <p style="text-align: center;"><a target="_blank" href="https://ecobillafrica.com/" tabindex="-1">Jamuki 1.0.0 - Theme: EcoPro</a></p>
+                <p style="text-align: center;" id="currentDateTime"></p>
+                <p style="text-align: center;">Version 1.0.0 Build 10.10.2023<br/>&copy;
+                    <script>document.write(new Date().getFullYear())</script>
+                    <a target="_blank" href="https://ecobillafrica.com/" tabindex="-1">Jamuki</a></p>
+            </div>
+        </div>
     </div>
 </div>
 
+<script src="{{asset('assets/swiper/swiper.js')}}" type=""></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" type=""></script>
+<script src="{{asset('assets/themes/hxbm/slider/script.js')}}" type=""></script>
+<script src="{{ asset('assets/main/custom_js/toastr/toastr.js')}}" type=""></script>
 
-          <div class="col-xl-5 col-xxl-4">
-            <div class="authentication-login min-vh-100 bg-body row justify-content-center align-items-center p-4">
-              <div class="auth-max-width col-sm-8 col-md-6 col-xl-7 px-4">
-                <h2 class="mb-1 fs-7 fw-bolder">Welcome</h2>
-                <p class="mb-7">Jamuki</p>
+<script>
+    @if($errors->any())
+    $(document).ready(function () {
+        @foreach($errors->all() as $error)
+        toastr.error('{{ $error }}', 'Error');
+        @endforeach
+    });
+    @endif
+</script>
 
-                <form method="POST" action="{{ route('login') }}">
-
-                  @csrf
-                  
-                  <div class="mb-3">
-                    <label for="employee_id" class="form-label">Employee ID</label>
-                    <input id="employee_id" type="text" class="form-control @error('employee_id') is-invalid @enderror" name="employee_id" value="{{ old('employee_id') }}" required autofocus>
-                    @error('employee_id')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                    @enderror
-                  </div>
-
-                  <div class="mb-4">
-                    <label for="password" class="form-label">Password</label>
-                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
-                    @error('password')
-                      <span class="invalid-feedback" role="alert">
-                          <strong>{{ $message }}</strong>
-                      </span>
-                    @enderror
-                  </div>
-
-                  <div class="d-flex align-items-center justify-content-between mb-4">
-                    <div class="form-check">
-                      <input class="form-check-input primary" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                      <label class="form-check-label text-dark fs-3" for="remember">
-                        Remember this Device
-                      </label>
-                    </div>
-                    @if (Route::has('password.request'))
-                      <a class="text-primary fw-medium fs-3" href="{{ route('password.request') }}">Forgot Password?</a>
-                    @endif
-                  </div>
-
-                  <button type="submit" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Sign In</button>
-                </form>
-                
-                <div class="d-flex align-items-center justify-content-center">
-                  <p class="fs-4 mb-0 fw-medium">New ?</p>
-                  <a class="text-primary fw-medium ms-2" href="{{ route('register') }}">Create an account</a>
-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    function handleColorTheme(e) {
-      document.documentElement.setAttribute("data-color-theme", e);
+<script>
+    function updateDateTime() {
+        const currentDateTime = new Date();
+        const formattedDateTime = currentDateTime.toLocaleString();
+        document.getElementById('currentDateTime').textContent = formattedDateTime;
     }
-  </script>
-@endsection
+    setInterval(updateDateTime, 1000);
 
+   
+    updateDateTime();
+</script>
+</body>
+</html>

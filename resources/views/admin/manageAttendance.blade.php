@@ -32,7 +32,7 @@
             </div>
           </div>
           <div class="datatables">
-            <!-- start File export -->
+         
             <div class="card">
               <div class="card-body">
                 <div class="mb-2">
@@ -42,7 +42,7 @@
                 <div class="table-responsive">
                   <table id="file_export" class="table w-100 table-striped table-bordered display text-nowrap">
                     <thead>
-                      <!-- start row -->
+                  
                       <tr>
                         <th>ID</th>
                         <th>Name</th>
@@ -51,10 +51,10 @@
                         
                         <th>Action</th>
                       </tr>
-                      <!-- end row -->
+                     <!-- end row -->
                     </thead>
                     <tbody>
-                      <!-- start row -->
+                
                       <tr>
                         <td>Tiger Nixon</td>
                         <td>System Architect</td>
@@ -71,7 +71,7 @@
 </td>
                       </div>
                       </tr>
-                      <!-- end row -->
+                     
                      
                       
                     </tfoot>
@@ -79,12 +79,7 @@
                 </div>
               </div>
             </div>
-            <!-- end File export -->
-            
-            
-           
-           
-           
+         
            
           </div>
         </div>

@@ -19,7 +19,7 @@
 
                                 @error('employee_id')
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
+                                        <strong>{{ $message }}</strong> <div class="form-group">
                                     </span>
                                 @enderror
                             </div>

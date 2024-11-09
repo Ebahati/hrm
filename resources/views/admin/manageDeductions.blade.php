@@ -5,6 +5,18 @@
 @section('content')
 <div class="body-wrapper">
     <div class="container-fluid">
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
         <div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
             <div class="card-body px-4 py-3">
                 <div class="row align-items-center">
@@ -48,26 +60,30 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($deductions as $deduction)
-                                    <tr>
-                                        <td>{{ $deduction->employee->name }}</td>
-                                        <td>{{ $deduction->employee->designation }}</td> 
-                                        <td>{{ $deduction->deduction_reason }}</td>
-                                        <td>{{ $deduction->month }}</td>
-                                        <td>${{ number_format($deduction->amount, 2) }}</td>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-3">
-                                                <a href="{{ route('editDeductions', $deduction->id) }}" class="btn btn-primary">Edit</a>
-                                                <form action="{{ route('deleteDeduction', $deduction->id) }}" method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn bg-danger-subtle text-danger">Delete</button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
+    @foreach($deductions as $deduction)
+        <tr>
+            <td>{{ $deduction->employee ? $deduction->employee->name : 'No employee' }}</td> <!-- Check if employee exists -->
+          <td>{{ $deduction->employee && $deduction->employee->designation ? $deduction->employee->designation->name : 'No designation' }}</td>
+
+            <td>{{ $deduction->deduction_reason ?? 'No reason provided' }}</td>
+            <td>{{ $deduction->month }}</td>
+            <td>Ksh.{{ number_format($deduction->amount, 2) }}</td>
+            <td>
+                <div class="d-flex align-items-center gap-3">
+                    <a href="{{ route('editDeductions', $deduction->id) }}" class="btn btn-primary">Edit</a>
+                    <form action="{{ route('deleteDeduction', $deduction->id) }}" method="POST" style="display:inline;">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn bg-danger-subtle text-danger">Delete</button>
+</form>
+
+                </div>
+            </td>
+        </tr>
+    @endforeach
+</tbody>
+
+
                         </table>
                     </div>
                 </div>

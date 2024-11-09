@@ -1,4 +1,4 @@
-@extends('admin.layouts.app') 
+@extends('admin.layouts.app')
 
 @section('title', 'Manage Bonuses')
 
@@ -48,33 +48,33 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-    @forelse($bonuses as $bonus)
-        <tr>
-            <td>{{ $bonus->employee->name }}</td>
-            <td>{{ $bonus->employee->designation }}</td>
-            <td>{{ $bonus->bonus_type }}</td>
-            <td>{{ \Carbon\Carbon::parse($bonus->date)->format('F Y') }}</td>
-            <td>${{ number_format($bonus->amount, 2) }}</td>
-            <td>
-                <div class="d-flex align-items-center gap-2">
-                    <a href="{{ route('editBonus', $bonus->id) }}" class="btn btn-primary btn-sm">Edit</a>
-                    <form action="{{ route('deleteBonus', $bonus->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                </div>
-            </td>
-        </tr>
-    @empty
-        <tr>
-            <td colspan="6" class="text-center">No bonuses available.</td>
-        </tr>
-    @endforelse
-</tbody>
+                                    @forelse($bonuses as $bonus)
+                                        <tr>
+                                            
+                                            <td>{{ $bonus->employee ? $bonus->employee->name : 'N/A' }}</td>
+                                            <td>{{ $bonus->employee && $bonus->employee->designation ? $bonus->employee->designation->name : 'No Designation' }}</td>
 
 
-                                      
+                                            <td>{{ $bonus->bonus_type }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($bonus->date)->format('F Y') }}</td>
+                                            <td>Ksh.{{ number_format($bonus->amount, 2) }}</td>
+                                            <td>
+    <div class="d-flex align-items-center gap-2">
+        <a href="{{ route('editBonus', $bonus->id) }}" class="btn btn-primary btn-sm">Edit</a>
+        <form action="{{ route('deleteBonus', $bonus->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this bonus?');">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+        </form>
+    </div>
+</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center">No bonuses available.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
                             </table>
                         </div>
                     </div>

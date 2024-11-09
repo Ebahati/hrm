@@ -4,17 +4,18 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Employee; 
+
 use App\Models\Leave; 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LeaveController extends Controller
 {
     public function showLeaveApplicationForm()
     {
-        
-        $employees = Employee::all();
-
-        return view('admin.addLeave', compact('employees'));
+        $user = Auth::user(); 
+        $employee = Employee::where('employee_id', $user->employee_id)->first();
+        return view('admin.addLeave', compact('employee'));
     }
 
     public function storeLeaveApplication(Request $request)
@@ -43,25 +44,24 @@ class LeaveController extends Controller
 
 }
 
-
 public function approve($id)
 {
     $leave = Leave::findOrFail($id);
-   
     $leave->status = 'approved';
+    $leave->save();
 
-    return response()->json(['message' => 'Leave application approved successfully.']);
+    return redirect()->back()->with('success', 'Leave application approved successfully.');
 }
 
 public function reject($id)
 {
     $leave = Leave::findOrFail($id);
-   
-    $leave->status = 'rejected'; 
+    $leave->status = 'rejected';
     $leave->save();
 
-    return response()->json(['message' => 'Leave application rejected successfully.']);
+    return redirect()->back()->with('error', 'Leave application rejected successfully.');
 }
+
 
 
 public function showStatus()

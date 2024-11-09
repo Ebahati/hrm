@@ -29,9 +29,34 @@
     </div>
 
     <div class="datatables">
-      <!-- Start File Export -->
+   
       <div class="card">
         <div class="card-body">
+            
+             @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+              
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
           <div class="mb-2">
             <a href="{{ route('addExpense') }}" class="btn btn-primary">Add Expense</a>
           </div>
@@ -76,7 +101,7 @@
           </div>
         </div>
       </div>
-      <!-- End File Export -->
+     
     </div>
   </div>
 </div>

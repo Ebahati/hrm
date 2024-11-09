@@ -1,15 +1,16 @@
 
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr" data-bs-theme="light" data-color-theme="Blue_Theme" data-layout="vertical">
 <head>
-  <!-- Required meta tags -->
+ 
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Favicon icon-->
+
   <link rel="shortcut icon" type="image/png" href="{{ asset('assets/logo.png') }}" />
-  <!-- Core Css -->
+  
   <link rel="stylesheet" href="https://bootstrapdemos.adminmart.com/modernize/dist/assets/css/styles.css" />
 
 
@@ -17,7 +18,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
   <title>Jamuki</title>
-  <!-- Owl Carousel  -->
+ 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <link rel="stylesheet" href="https://bootstrapdemos.adminmart.com/modernize/dist/assets/libs/owl.carousel/dist/assets/owl.carousel.min.css" />
@@ -26,20 +27,9 @@
 </head>
 
 <body>
-<div class="toast toast-onload align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true" id="greetingToast">
-    <div class="toast-body hstack align-items-start gap-6">
-    <i class="fas fa-check-circle fs-6"></i>
 
 
-      <div>
-        <h5 class="text-white fs-3 mb-1" id="greetingMessage">Welcome!</h5>
-        <h6 class="text-white fs-2 mb-0" id="usernameMessage">Username</h6>
-      </div>
-      <button type="button" class="btn-close btn-close-white fs-2 m-0 ms-auto shadow-none" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-</div>
 
-  <!-- Preloader -->
   <div class="preloader">
   <img src="{{ asset('assets/logo.png') }}" alt="Logo" class="lds-ripple img-fluid" />
   </div>
@@ -53,16 +43,7 @@
    
         @yield('content')
 
-        <!-- Toast Notification -->
-        <div class="toast" id="greetingToast" data-bs-autohide="false">
-            <div class="toast-header">
-                <strong class="me-auto" id="greetingMessage"></strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body" id="usernameMessage"></div>
-        </div>
 
-        <!-- Theme Customizer -->
         <script>
   function handleColorTheme(e) {
     document.documentElement.setAttribute("data-color-theme", e);
@@ -269,29 +250,7 @@
     </div>
   </div>
   <div class="dark-transparent sidebartoggler"></div>
-  <script>
  
-  const username = "Admin"; 
-
-  function getGreeting() {
-      const hour = new Date().getHours(); 
-      if (hour < 12) {
-          return "Good Morning"; 
-      } else if (hour < 18) {
-          return "Good Afternoon"; 
-      } else {
-          return "Good Evening"; 
-      }
-  }
-
-
-  document.getElementById('greetingMessage').innerText = getGreeting();
-  document.getElementById('usernameMessage').innerText = "Welcome, " + username;
-
-
-  const toast = new bootstrap.Toast(document.getElementById('greetingToast'));
-  toast.show();
-</script>
 
   <script src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/js/vendor.min.js"></script>
 

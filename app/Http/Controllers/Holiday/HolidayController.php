@@ -58,4 +58,13 @@ class HolidayController extends Controller
 
         return redirect()->route('manageHoliday')->with('success', 'Holiday updated successfully.');
     }
+
+    public function destroy($id)
+{
+    $holiday = Holiday::findOrFail($id);  
+    $holiday->delete(); 
+
+    return redirect()->route('manageHoliday')->with('success', 'Holiday deleted successfully!');
+}
+
 }

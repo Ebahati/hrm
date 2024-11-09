@@ -6,9 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
+    
     public function register(): void
     {
         //
@@ -22,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-    // In AppServiceProvider or a helper file
+  
 function isEmployee($user) {
     return str_starts_with($user->employee_id, 'EMP');
 }

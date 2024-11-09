@@ -1,24 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payslip</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .table th, .table td { border: 1px solid #ddd; padding: 8px; }
-        .table th { background-color: #f2f2f2; text-align: left; }
-    </style>
 </head>
 <body>
 
+<div class="container">
     <div class="header">
-        <h2>Payslip</h2>
+        <h1>Payslip for {{ $employee->name }}</h1>
         <p>Employee ID: {{ $employee->employee_id }}</p>
-        <p>Name: {{ $employee->name }}</p>
-        <p>Designation: {{ $employee->designation }}</p>
+     
     </div>
 
     <table class="table">
@@ -39,7 +30,7 @@
             <td>{{ $salary->house_allowance }}</td>
         </tr>
         <tr>
-            <th>NHIF</th>
+            <th>SHIF</th>
             <td>{{ $salary->nhif }}</td>
         </tr>
         <tr>
@@ -67,6 +58,12 @@
             <td>{{ $salary->net_salary }}</td>
         </tr>
     </table>
+
+    <div class="footer">
+        <p>Generated on {{ date('F d, Y') }}</p>
+        <p>If you have any questions, please contact HR.</p>
+    </div>
+</div>
 
 </body>
 </html>

@@ -8,20 +8,20 @@ class AwardController extends Controller
 {
     public function create()
     {
-        // Show the form for adding a new award
-        $employees = Employee::all(); // Get the employee data
+       
+        $employees = Employee::all(); 
         return view('admin.addAward', compact('employees'));
     }
 
     public function showAward()
     {
-        // Show the list of awards
-        $awards = Award::all(); // Fetch all awards
+       
+        $awards = Award::all(); 
         return view('admin.manageAward', compact('awards'));
     }
     public function store(Request $request)
     {
-        // Validate the request
+       
         $request->validate([
             'employee_id' => 'required|string',
             'award_category' => 'required|string',
@@ -30,7 +30,7 @@ class AwardController extends Controller
             'description' => 'nullable|string',
         ]);
     
-        // Create a new award
+      
         Award::create([
             'employee_id' => $request->employee_id,
             'award_category' => $request->award_category,
@@ -39,7 +39,7 @@ class AwardController extends Controller
             'description' => $request->description,
         ]);
     
-        // Redirect back with success message
+       
         return redirect()->route('manageAward')->with('success', 'Award added successfully!');
     }
 

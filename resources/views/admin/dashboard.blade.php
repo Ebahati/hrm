@@ -3,12 +3,17 @@
 @section('title', 'Dashboard')
 
 @section('content')
-
-      
+<div class="toast toast-onload align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true" id="greetingToast">
+    <div class="toast-body hstack align-items-start gap-6">
+        <i class="fas fa-check-circle fs-6"></i>
+        <span id="loginSuccessMessage">Login successful! Welcome,</span>
+        <button type="button" class="btn-close btn-close-white fs-2 m-0 ms-auto shadow-none" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
 
       <div class="body-wrapper">
         <div class="container-fluid">
-          <!--  Owl carousel -->
+     
           <div class="owl-carousel counter-carousel owl-theme">
           <div class="item">
     <div class="card border-0 zoom-in bg-primary-subtle shadow-none">
@@ -55,7 +60,7 @@
                   <div class="text-center">
                     <img src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/images/svgs/icon-favorites.svg" width="50" height="50" class="mb-3" alt="modernize-img" />
                     <p class="fw-semibold fs-3 text-danger mb-1">Awards</p>
-                    <h5 class="fw-semibold text-danger mb-0">{{ $totalAwards }}</h5> <!-- Show the total number of awards -->
+                    <h5 class="fw-semibold text-danger mb-0">{{ $totalAwards }}</h5>
                   </div>
                 </div>
               </div>
@@ -168,7 +173,7 @@
               </div>
             </div>
             <div class="col-lg-4 d-flex align-items-stretch flex-column">
-              <!-- files -->
+         
               <div class="card w-100">
     <div class="card-body">
         <div class="row align-items-center">
@@ -203,7 +208,7 @@
 </div>
 
 
-              <!-- Employees -->
+              <!-- rem check all graphs -->
               <div class="card w-100">
     <div class="card-body">
         <div class="row align-items-start">
@@ -425,13 +430,13 @@
    
 const ctxAward = document.getElementById('awardChart').getContext('2d');
 const awardChart = new Chart(ctxAward, {
-    type: 'line', // Change the chart type if needed
+    type: 'line', 
     data: {
         labels: {!! json_encode($awardCounts->pluck('award_category')) !!},
         datasets: [{
             label: 'Total Awards',
             data: {!! json_encode($awardCounts->pluck('total')) !!},
-            backgroundColor: '#36A2EB', // Use your preferred color
+            backgroundColor: '#36A2EB', 
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1
         }]

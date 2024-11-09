@@ -50,14 +50,17 @@
             <select id="employeeSelect" class="form-select" name="employee_id" onchange="updateEmployeeDetails()" required>
     <option value="">Select Employee</option>
     @foreach($employees as $employee)
-        <option value="{{ $employee->employee_id }}"  
+        <option value="{{ $employee->employee_id }}" 
                 data-name="{{ $employee->name }}" 
-                data-bonus="{{ $employee->bonus_amount }}" 
+                data-bonus="{{ $employee->bonus_amount }}"  
                 data-deductions="{{ $employee->deductions_amount }}">
             {{ $employee->employee_id }}
         </option>
     @endforeach
 </select>
+
+
+
 
         </div>
 
@@ -103,7 +106,7 @@
 
     <div class="row">
         <div class="col-lg-6 mb-4">
-            <label for="nhif" class="form-label">NHIF Deduction</label>
+            <label for="nhif" class="form-label">SHIF Deduction</label>
             <input type="number" class="form-control" id="nhif" name="nhif" placeholder="Enter NHIF Deduction">
         </div>
 
@@ -157,10 +160,17 @@ function updateEmployeeDetails() {
     const employeeBonus = selectedOption.getAttribute('data-bonus');
     const employeeDeductions = selectedOption.getAttribute('data-deductions');
 
+
     document.getElementById('employeeName').value = employeeName || '';
+
+   
     document.getElementById('bonus').value = employeeBonus || 0;
+
+   
     document.getElementById('deductions').value = employeeDeductions || 0;
 }
+
+
 
 function calculateSalaries() {
     const basicSalary = parseFloat(document.getElementById('basicSalary').value) || 0;
@@ -175,15 +185,15 @@ function calculateSalaries() {
     const deductions = parseFloat(document.getElementById('deductions').value) || 0; 
     const otherDeductions = parseFloat(document.getElementById('otherDeductions').value) || 0; 
 
-    // Calculate Gross Salary
+   
     const grossSalary = basicSalary + bonus + houseAllowance + medicalAllowance;
     document.getElementById('grossSalary').value = grossSalary.toFixed(2);
 
-    // Calculate Total Deductions (Predefined + NHIF + NSSF + Tax + Other Deductions)
+   
     const totalDeductions = deductions + nhif + nssf + tax + otherDeductions;
     document.getElementById('totalDeductions').value = totalDeductions.toFixed(2);
 
-    // Calculate Net Salary
+   
     const netSalary = grossSalary - totalDeductions;
     document.getElementById('netSalary').value = netSalary.toFixed(2);
 }

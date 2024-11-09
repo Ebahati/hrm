@@ -14,6 +14,32 @@
 
         <div class="card">
             <div class="card-body p-4">
+                
+              
+                @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+              
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <form action="{{ route('generatePayslip') }}" method="POST">
                     @csrf
 
@@ -37,15 +63,16 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Download Payslip</button>
+                    <button type="submit" class="btn btn-primary">Generate Payslip</button>
                 </form>
+
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Populate employee name when an ID is selected
+    
     document.getElementById('employee_id').addEventListener('change', function () {
         const selectedOption = this.options[this.selectedIndex];
         const employeeName = selectedOption.getAttribute('data-name');

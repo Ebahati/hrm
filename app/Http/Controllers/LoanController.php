@@ -1,24 +1,19 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Loan;
 use App\Models\Employee; 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class LoanController extends Controller
 {
-   
     public function create()
     {
-       
         $employees = Employee::all();
-
-    
         return view('admin.addLoan', compact('employees'));
     }
 
-   
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -28,7 +23,6 @@ class LoanController extends Controller
             'amount' => 'required|numeric|min:1',
         ]);
     
-       
         $loan = Loan::create([
             'employee_id' => $request->employee_id,
             'installments' => $request->installments,
@@ -41,72 +35,49 @@ class LoanController extends Controller
     
         return redirect()->route('manageLoan')->with('success', 'Loan added successfully.');
     }
-    
-
-  
-    public function manageEmployees()
-    {
-        
-        $employees = Employee::all();
-
-        return view('admin.manageEmployee', compact('employees'));
-    }
 
     public function manageLoans()
-{
-  
-    $loans = Loan::with('employee')->get();
-
-  
-    return view('admin.manageLoan', compact('loans'));
-}
-public function update(Request $request, $loanId)
-{
-    try {
-        $validated = $request->validate([
-            'paid_amount' => 'required|numeric|min:0',
-            'remaining_amount' => 'required|numeric|min:0',
-            'status' => 'required|string|in:cleared,pending',
-        ]);
-
-        $loan = Loan::findOrFail($loanId);
-        $loan->total_paid += $validated['paid_amount']; 
-        $loan->remaining_amount = $validated['remaining_amount'];
-        $loan->status = $validated['status'];
-
-        if ($loan->save()) {
-            return response()->json(['success' => true, 'message' => 'Update successfully done!']);
-        } else {
-            return response()->json(['success' => false, 'error' => 'Database update failed']);
-        }
-    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-        return response()->json(['success' => false, 'error' => 'Loan not found'], 404);
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return response()->json(['success' => false, 'errors' => $e->errors()]);
-    } catch (\Exception $e) {
-       
-        \Log::error('Update Error: '.$e->getMessage());
-        return response()->json(['success' => false, 'error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+    {
+        $loans = Loan::with('employee')->get();
+        return view('admin.manageLoan', compact('loans'));
     }
-}
+
+    public function edit($id)
+    {
+        $loan = Loan::findOrFail($id);
+        $employees = Employee::all(); 
+        return view('admin.editLoan', compact('loan', 'employees')); 
+    }
+    
+ 
 
 
-
-
-
-public function clearLoan($id)
+    public function update(Request $request, $id)
 {
     $loan = Loan::findOrFail($id);
-    $loan->status = 'cleared';
-    $loan->remaining_amount = 0;
-    $loan->save();
 
-    return response()->json(['success' => true]);
+    $validated = $request->validate([
+        'paid_amount' => 'required|numeric|min:0',
+    ]);
+
+   
+    $newTotalPaid = $loan->total_paid + $request->paid_amount;
+
+   
+    $remainingAmount = $loan->amount - $newTotalPaid;
+
+    $status = $remainingAmount <= 0 ? 'cleared' : 'pending';
+
+ 
+    $loan->update([
+        'total_paid' => $newTotalPaid,
+        'remaining_amount' => $remainingAmount,
+        'status' => $status,
+        'updated_at' => now()
+    ]);
+
+    return redirect()->route('manageLoan')->with('success', 'Loan updated successfully.');
 }
 
-    
-    
-
-    
     
 }

@@ -29,12 +29,12 @@
               </div>
             </div>
           </div>
-          <!-- Row -->
+    
           <div class="row">
             
             
             <div class="col-12">
-              <!-- start Employee Timing -->
+             
               <div class="card">
                 <div class="card-body">
                   <h4 class="card-title">Deduction</h4>
@@ -105,15 +105,13 @@
                   </div>
                 </form>
               </div>
-              <!-- end Employee Timing -->
+              
             </div>
             <div class="col-12">
-              <!-- start Event Registration -->
-              
-              <!-- end Event Registration -->
+
             </div>
           </div>
-          <!-- End Row -->
+      
         </div>
       </div>
       @endsection

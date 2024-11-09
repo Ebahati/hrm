@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'employee_id',
         'email',
         'password',
         'role',
@@ -47,6 +47,8 @@ class User extends Authenticatable
 
     public function employee()
     {
-        return $this->hasOne(Employee::class, 'employee_id', 'employee_id'); // Assuming employee_id is the foreign key in users table
+        return $this->hasOne(Employee::class, 'employee_id', 'employee_id'); 
     }
+
+    
 }

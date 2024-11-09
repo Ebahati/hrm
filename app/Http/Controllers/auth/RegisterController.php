@@ -44,8 +44,15 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
 {
+   
+    $employeeExists = Employee::where('employee_id', $data['employee_id'])->exists();
+    
+    if (!$employeeExists) {
+        throw new \Exception("Employee ID does not exist.");
+    }
+
     return User::create([
-        'name' => $data['employee_id'], 
+        'employee_id' => $data['employee_id'], 
         'email' => $data['email'],
         'password' => Hash::make($data['password']),
     ]);
@@ -54,6 +61,7 @@ class RegisterController extends Controller
 
 public function showRegistrationForm()
 {
-    return view('auth.register'); 
+    return view('auth.register');
 }
+
 }

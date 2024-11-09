@@ -6,7 +6,24 @@
 
 <div class="body-wrapper">
     <div class="container-fluid">
-        <!-- Header Card -->
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if(session('warning'))
+    <div class="alert alert-warning">
+        {{ session('warning') }}
+    </div>
+@endif
+       
         <div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
             <div class="card-body px-4 py-3">
                 <div class="row align-items-center">
@@ -65,12 +82,15 @@
                                 <div class="row align-items-center">
                                     <label for="employee_id" class="col-3 text-end col-form-label">Employee ID</label>
                                     <div class="col-9 border-start pb-2 pt-2">
-                                        <select class="form-select" id="employee_id" name="employee_id" onchange="updateEmployeeName()">
-                                            <option value="" selected>-- Select Employee --</option>
-                                            @foreach($employees as $employee)
-                                                <option value="{{ $employee->employee_id }}">{{ $employee->employee_id }} - {{ $employee->name }}</option>
-                                            @endforeach
-                                        </select>
+                                    <select class="form-select" id="employee_id" name="employee_id" onchange="updateEmployeeName()">
+    <option value="" selected>-- Select Employee --</option>
+    @foreach($employees as $employee)
+        <option value="{{ $employee->employee_id }}" data-name="{{ $employee->name }}">
+            {{ $employee->employee_id }}
+        </option>
+    @endforeach
+</select>
+
                                     </div>
                                 </div>
                             </div>
@@ -80,7 +100,7 @@
                                 <div class="row align-items-center">
                                     <label for="employee_name" class="col-3 text-end col-form-label">Employee Name</label>
                                     <div class="col-9 border-start pb-2 pt-2">
-                                        <input type="text" class="form-control" id="employee_name" name="employee_name" readonly />
+                                    <input type="text" class="form-control" id="employee_name" name="employee_name" readonly />
                                     </div>
                                 </div>
                             </div>
@@ -100,7 +120,7 @@
                                 </div>
                             </div>
 
-                            <!-- Status -->
+                       
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
                                     <label for="status" class="col-3 text-end col-form-label">Status</label>
@@ -128,7 +148,7 @@
             </div>
         </div>
 
-        <!-- Leave Applications Table -->
+    
         <div class="row mt-4">
             <div class="col-12">
                 <div class="card">
@@ -142,7 +162,7 @@
                                         <th>Employee</th>
                                         <th>Leave Type</th>
                                         <th>Status</th>
-                                        <th>Actions</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -152,18 +172,7 @@
                                             <td>{{ $leave->employee->name }}</td>
                                             <td>{{ $leave->leave_category }}</td>
                                             <td>{{ $leave->status }}</td>
-                                            <td>
-                                                <div class="d-flex align-items-center gap-3">
-                                                    <form action="{{ route('approveLeave', $leave->id) }}" method="POST" style="display: inline;">
-                                                        @csrf
-                                                        <button type="submit" class="btn btn-success">Approve</button>
-                                                    </form>
-                                                    <form action="{{ route('rejectLeave', $leave->id) }}" method="POST" style="display: inline;">
-                                                        @csrf
-                                                        <button type="submit" class="btn bg-danger-subtle text-danger">Reject</button>
-                                                    </form>
-                                                </div>
-                                            </td>
+                                            
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -173,20 +182,25 @@
                 </div>
             </div>
         </div>
-        <!-- End Row -->
+      
     </div>
 </div>
 
 <script>
     function updateEmployeeName() {
-        var employeeSelect = document.getElementById('employee_id');
-        var employeeNameInput = document.getElementById('employee_name');
+    var employeeSelect = document.getElementById("employee_id");
+    var employeeNameInput = document.getElementById("employee_name");
 
-      
-        var selectedOption = employeeSelect.options[employeeSelect.selectedIndex].text;
-        var employeeName = selectedOption.split(' - ')[1];
-        employeeNameInput.value = employeeName;
-    }
+    
+    var selectedOption = employeeSelect.options[employeeSelect.selectedIndex];
+
+
+    var employeeName = selectedOption.getAttribute("data-name");
+
+   
+    employeeNameInput.value = employeeName;
+}
+
 </script>
 
 @endsection

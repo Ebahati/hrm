@@ -6,6 +6,24 @@
 
 <div class="body-wrapper">
     <div class="container-fluid">
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if(session('warning'))
+    <div class="alert alert-warning">
+        {{ session('warning') }}
+    </div>
+@endif
+
         <div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
             <div class="card-body px-4 py-3">
                 <div class="row align-items-center">
@@ -30,7 +48,7 @@
         </div>
 
         <div class="datatables">
-            <!-- start File export -->
+          
             <div class="card">
                 <div class="card-body">
                     <div class="mb-2">
@@ -61,21 +79,22 @@
             <td>{{ $leave->leave_category }}</td>
             <td>{{ $leave->status }}</td>
             <td>
-    <div class="d-flex align-items-center gap-3">
-        <form class="approve-form" action="{{ route('approveLeave', $leave->id) }}" method="POST" style="display: inline;">
-            @csrf
-            <button type="button" class="btn btn-success approve-button" data-leave-id="{{ $leave->id }}">Approve</button>
-        </form>
-        <form class="reject-form" action="{{ route('rejectLeave', $leave->id) }}" method="POST" style="display: inline;">
-            @csrf
-            <button type="button" class="btn bg-danger-subtle text-danger reject-button" data-leave-id="{{ $leave->id }}">Reject</button>
-        </form>
-    </div>
-</td>
+              
+                @if($leave->status !== 'approved') 
+                    <form action="{{ route('approveLeave', $leave->id) }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-success">Approve</button>
+                    </form>
+                @endif
 
 
-
-
+                @if($leave->status !== 'rejected') 
+                    <form action="{{ route('rejectLeave', $leave->id) }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Reject</button>
+                    </form>
+                @endif
+            </td>
         </tr>
     @endforeach
 </tbody>
@@ -84,7 +103,7 @@
                     </div>
                 </div>
             </div>
-            <!-- end File export -->
+           
         </div>
     </div>
 </div>

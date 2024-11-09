@@ -51,20 +51,15 @@
                                 <tr>
                                     <td>{{ $file->name }}</td>
                                     <td>{{ $file->details }}</td>
-                                    <td>{{ $file->uploader_name ?? 'Admin' }}</td>
+                                    <td>{{ $file->uploader_name }}</td>
+
                                     <td>{{ $file->created_at->format('d/m/Y') }}</td>
                                     <td><span class="badge bg-success">Active</span></td>
                                     <td>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <a href="{{ Storage::url($file->path) }}" 
-                                               class="btn btn-info" target="_blank">
-                                                View
-                                            </a>
-                                            <a href="{{ Storage::url($file->path) }}" 
-                                               class="btn btn-danger" download>
-                                                Download
-                                            </a>
-                                        </div>
+                                        <a href="{{ Storage::url($file->path) }}" 
+                                           class="btn btn-danger" download>
+                                            Download
+                                        </a>
                                     </td>
                                 </tr>
                                 @empty

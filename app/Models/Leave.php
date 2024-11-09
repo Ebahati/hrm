@@ -9,7 +9,6 @@ class Leave extends Model
 {
     use HasFactory;
 
-    // Define fillable attributes for mass assignment
     protected $fillable = [
         'employee_id',
         'leave_category',

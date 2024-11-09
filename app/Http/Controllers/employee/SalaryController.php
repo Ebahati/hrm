@@ -8,6 +8,9 @@ use App\Models\Employee;
 use App\Models\Deduction;
 use App\Models\Bonus;
 use App\Models\Salary;
+use App\Models\SalaryPayment;
+use App\Notifications\SalaryPaid;
+use App\Models\Notification;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class SalaryController extends Controller
@@ -22,53 +25,99 @@ class SalaryController extends Controller
    
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'employee_id' => 'required|exists:employees,employee_id', 
+        $request->validate([
+            'employee_id' => 'required|exists:employees,employee_id',
             'amount' => 'required|numeric',
-            'month' => 'required|date',
+            'month' => 'required|date_format:Y-m',
             'deduction_reason' => 'nullable|string|max:255',
         ]);
+    
+        $deduction = new Deduction();
+        $deduction->employee_id = $request->employee_id;
+        $deduction->amount = $request->amount;
+        $deduction->month = $request->month;
+        $deduction->deduction_reason = $request->deduction_reason;
+        $deduction->save();
+    
+        return redirect()->route('manageDeductions')->with('success', 'Deduction added successfully!');
+    }
+    
+public function deleteDeduction($id)
+{
+    
+    $deduction = Deduction::findOrFail($id);
 
-        Deduction::create($validated);
+    if ($deduction) {
+        $deduction->delete();
 
-        return redirect()->route('manageDeductions')->with('success', 'Deduction added successfully.');
+        return redirect()->route('manageDeductions')->with('success', 'Deduction deleted successfully.');
     }
 
-   
+    return redirect()->route('manageDeductions')->with('error', 'Deduction not found.');
+}
+
     public function manageDeductions()
     {
-        $deductions = Deduction::with('employee')->get();
+        
+        $deductions = Deduction::with('employee')->get(); 
         return view('admin.manageDeductions', compact('deductions'));
     }
+    
 
- 
     public function createBonusForm()
     {
         $employees = Employee::all();
         return view('admin.addBonus', compact('employees'));
     }
-
-   
+    
     public function storeBonus(Request $request)
     {
-        $validated = $request->validate([
-            'employee_id' => 'required|exists:employees,employee_id', 
+            $validated = $request->validate([
+            'employee_id' => 'required|exists:employees,employee_id',  
             'bonus_type' => 'required|string|max:255',
             'date' => 'required|date',
             'amount' => 'required|numeric|min:0',
             'description' => 'nullable|string|max:255',
         ]);
-
-        Bonus::create($validated);
-
-        return redirect()->route('manageBonus')->with('success', 'Bonus added successfully.');
+    
+        Bonus::create([
+            'employee_id' => $validated['employee_id'],  
+            'bonus_type' => $validated['bonus_type'],
+            'date' => $validated['date'],
+            'amount' => $validated['amount'],
+            'description' => $validated['description'] ?? null,
+        ]);
+    
+               return redirect()->route('manageBonus')->with('success', 'Bonus added successfully.');
     }
-
+    
     public function manageBonuses()
     {
-        $bonuses = Bonus::with('employee')->get(); 
+
+        $bonuses = Bonus::with('employee')->get();
         return view('admin.manageBonus', compact('bonuses'));
     }
+
+public function edit($id)
+{
+   
+    $bonus = Bonus::findOrFail($id);
+
+  
+    $employees = Employee::all();
+
+  
+    return view('admin.addBonus', compact('bonus', 'employees'));
+}
+
+
+public function deleteBonus($id)
+{
+    $bonus = Bonus::findOrFail($id);  
+    $bonus->delete();  
+
+    return redirect()->route('manageBonus')->with('success', 'Bonus deleted successfully!');  
+}
 
    
     public function manageSalary()
@@ -76,39 +125,40 @@ class SalaryController extends Controller
         $employees = Employee::with(['bonuses', 'deductions'])->get()->map(function($employee) {
             $employee->bonus_amount = $employee->bonuses->sum('amount');
             $employee->deductions_amount = $employee->deductions->sum('amount');
-
-            
-            $employee->nhif_amount = $employee->nhif_amount;
-            $employee->nssf_amount = $employee->nssf_amount;
-
+    
+            $employee->nhif_amount = $employee->nhif;
+            $employee->nssf_amount = $employee->nssf;
             $employee->other_deductions = 0; 
             $employee->medical_allowance = 0; 
             $employee->house_allowance = 0;
-
+    
             $employee->gross_salary = $employee->basic_salary 
                 + $employee->bonus_amount 
                 + $employee->medical_allowance 
                 + $employee->house_allowance;
-
+    
+            
             $employee->total_deductions = $employee->deductions_amount 
                 + $employee->nhif_amount 
                 + $employee->nssf_amount 
                 + $employee->other_deductions;
-
+    
             return $employee;
         });
-
+    
         return view('admin.manageSalary', compact('employees'));
     }
+    
 
     public function salaryList()
     {
-        $employees = Employee::join('salaries', 'employees.employee_id', '=', 'salaries.employee_id') 
+        $employees = Employee::join('salaries', 'employees.employee_id', '=', 'salaries.employee_id')
+            ->join('designations', 'employees.designation_id', '=', 'designations.id') 
             ->select(
                 'salaries.id',
                 'employees.employee_id', 
                 'employees.name',
-                'employees.designation',
+                'designations.name as designation_name', 
                 'salaries.basic_salary',
                 'salaries.bonus',
                 'salaries.medical_allowance',
@@ -124,10 +174,10 @@ class SalaryController extends Controller
                 'salaries.updated_at'
             )
             ->get();
-
+    
         return view('admin.salaryList', compact('employees'));
     }
-
+    
    
     public function update(Request $request)
     {
@@ -254,36 +304,201 @@ class SalaryController extends Controller
     public function getEmployeeSalary($employee_id)
 {
     
-    $salaryDetails = Salary::where('employee_id', $employee_id)->first();
+    $salary = Salary::where('employee_id', $employee_id)->first();
 
-    if (!$salaryDetails) {
+    if (!$salary) {
         return response()->json(['error' => 'Salary details not found'], 404);
     }
 
-    return response()->json($salaryDetails);
+    return response()->json($salary);
 }
+
+
+
 public function generatePayslip(Request $request)
 {
     
-    $request->validate([
-        'employee_id' => 'required',
-    ]);
-
-   
     $employee = Employee::where('employee_id', $request->employee_id)->first();
-    $salary = Salary::where('employee_id', $employee->employee_id)->first();
+    $salary = Salary::where('employee_id', $request->employee_id)->first();
 
-    if (!$employee || !$salary) {
-        return back()->withErrors(['message' => 'Employee or Salary details not found.']);
+  
+    if (!$employee) {
+        return back()->with('error', 'Employee not found.');
+    }
+
+  
+    if (!$salary) {
+        return back()->with('error', 'Salary details not found for this employee.');
     }
 
    
     $pdf = PDF::loadView('admin.payslipView', compact('employee', 'salary'));
 
+  
+    $payslipFileName = 'payslip_' . $employee->employee_id . '.pdf';
+
+    
+    return $pdf->download($payslipFileName);
+}
+
+
+
+public function showSalaryPayments()
+{
+    $employees = Employee::join('salaries', 'employees.employee_id', '=', 'salaries.employee_id')
+        ->leftJoin('designations', 'employees.designation_id', '=', 'designations.id')
+        ->select(
+            'employees.employee_id',
+            'employees.name',
+            'designations.name as designation',
+            'salaries.net_salary',
+            'salaries.basic_salary',
+            'salaries.bonus',
+            'salaries.medical_allowance',
+            'salaries.house_allowance',
+            'salaries.nhif',
+            'salaries.nssf',
+            'salaries.tax',
+            'salaries.deductions',
+            'salaries.total_deductions',
+            'salaries.gross_salary'
+        )
+        ->get();
+
+    return view('admin.salaryPayments', compact('employees'));
+}
+public function paySalary(Request $request)
+{
+    $request->validate([
+        'employee_id' => 'required|exists:employees,employee_id',
+        'payment_date' => 'required|date',
+        'remarks' => 'nullable|string',
+       
+    ]);
+
+
+    $employee = Employee::where('employee_id', $request->employee_id)->first();
+
    
-    return $pdf->download('payslip_' . $employee->employee_id . '.pdf');
+    $salary = $employee->salary; 
+
+    if (!$salary) {
+        return redirect()->route('paymentList')->with('error', 'Salary record not found for this employee.');
+    }
+
+   
+    $salaryPayment = new SalaryPayment();
+    $salaryPayment->employee_id = $employee->employee_id;
+    $salaryPayment->payment_date = $request->payment_date;
+    $salaryPayment->remarks = $request->remarks;
+    $salaryPayment->save();
+
+    $pdf = PDF::loadView('admin.payslipView', [
+        'employee' => $employee,
+        'salary' => $salary,
+        'paymentDate' => $request->payment_date,
+        'remarks' => $request->remarks,
+     
+    ]);
+
+  
+    $payslipFileName = 'payslip_' . $employee->employee_id . '_' . now()->format('YmdHis') . '.pdf';
+    $pdf->save(storage_path('app/public/payslips/' . $payslipFileName));
+
+    $payslipUrl = url('storage/payslips/' . $payslipFileName);
+
+
+    $this->sendSalaryNotification($employee, $payslipUrl);
+
+    return redirect()->route('paymentList')->with('success', 'Salary payment recorded successfully and payslip generated!');
+}
+
+
+public function submitPaySalary(Request $request)
+{
+    
+    $validated = $request->validate([
+        'payment_date' => 'required|date',
+        'employee_id' => 'required|string',
+        'net_salary' => 'required|numeric',
+        'remarks' => 'nullable|string',
+    ]);
+
+  
+    $employee = Employee::where('employee_id', $validated['employee_id'])->firstOrFail();
+
+  
+    $salaryPayment = new SalaryPayment();
+    $salaryPayment->employee_id = $employee->employee_id;
+    $salaryPayment->payment_date = $validated['payment_date'];
+    $salaryPayment->net_salary = $validated['net_salary'];
+    $salaryPayment->remarks = $validated['remarks'];
+    $salaryPayment->save();  
+
+  
+    $payslipPath = 'payslips/' . $employee->employee_id . '_payslip_' . now()->format('Y_m') . '.pdf';
+    $pdf = PDF::loadView('payslipView', compact('employee', 'salaryPayment')); 
+    $pdf->save(storage_path('app/public/' . $payslipPath));
+
+  
+    Notification::create([
+        'employee_id' => $employee->employee_id,
+        'title' => 'Salary Paid',
+        'message' => 'Check your Account.',
+        'payslip_url' => asset('storage/' . $payslipPath), 
+        'read' => false,
+    ]);
+
+   
+    return redirect()->route('dashboard')->with('success', 'Salary payment recorded and notification sent!');
+}
+
+public function showPaymentList()
+{
+    $salaryPayments = SalaryPayment::with('employee', 'salary')->get(); 
+
+    return view('admin.paymentList', compact('salaryPayments'));
+}
+
+
+public function sendSalaryNotification($employee, $payslipUrl)
+{
+    Notification::create([
+        'employee_id' => $employee->employee_id,  
+        'message' => 'Check your Account.',
+        'payslip_url' => $payslipUrl,
+    ]);
+}
+
+
+public function markAsRead($id)
+{
+    $notification = Notification::findOrFail($id);
+
+    if ($notification->employee_id == auth()->user()->employee_id) {
+        $notification->update(['read' => true]);
+        return response()->json(['message' => 'Notification marked as read']);
+    }
+
+    return response()->json(['message' => 'Unauthorized action'], 403);
+}
+
+
+public function deleteNotification($id)
+{
+    $notification = Notification::findOrFail($id);
+
+    
+    if ($notification->employee_id == auth()->user()->employee_id) {
+        $notification->delete();
+        return response()->json(['message' => 'Notification deleted']);
+    }
+
+    return response()->json(['message' => 'Unauthorized action'], 403);
+}
+
+
 }
 
 
 
-}

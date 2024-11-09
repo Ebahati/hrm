@@ -19,14 +19,50 @@ class EmployeeAccess
     {
         $user = Auth::user();
 
-        // Check if the user is authenticated
+        
         if (!$user) {
-            return redirect()->route('login'); // Redirect to login if not authenticated
+            return redirect()->route('login'); 
         }
 
-        // Check if the user is an employee
-        if ($user->employee_id && strpos($user->employee_id, 'EMP') === 0) {
-            // Allow access only to specified routes
+        $employeeId = $user->employee_id ?? '';
+
+        
+        if (empty($employeeId) || preg_match('/^[A-Za-z0-9]+$/', $employeeId)) {
+            
+            return $next($request);
+        }
+
+       
+        if (\Str::startsWith($employeeId, 'SBA')) {
+           
+            $allowedRoutes = [
+                'manageLeave', 
+                'manageFiles', 
+                'addEmployee', 
+                'manageEmployee', 
+                'manageSalary',
+                'salaryList', 
+                'bonusList',
+                'addLeave',
+                'storeLeave',
+                'leaveStatus',
+                'dashboard',
+                'manageFiles',
+                'files.store',
+                'addFiles', 
+              
+            ];
+
+            if (in_array($request->route()->getName(), $allowedRoutes)) {
+                return $next($request);
+            }
+
+            return redirect()->route('dashboard'); 
+        }
+
+        
+        if (\Str::startsWith($employeeId, 'EMP')) {
+          
             $allowedRoutes = [
                 'addLeave',
                 'storeLeave',
@@ -37,13 +73,14 @@ class EmployeeAccess
                 'addFiles',
             ];
 
-            if (!in_array($request->route()->getName(), $allowedRoutes)) {
-                return redirect()->route('login'); // Redirect to login if access is denied
+            if (in_array($request->route()->getName(), $allowedRoutes)) {
+                return $next($request); 
             }
-        } else {
-            return redirect()->route('login'); // Redirect to login if not an employee
+
+            return redirect()->route('dashboard'); 
         }
 
-        return $next($request);
+
+        return redirect()->route('login');
     }
 }

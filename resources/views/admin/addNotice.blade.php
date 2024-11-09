@@ -6,7 +6,7 @@
 
 <div class="body-wrapper">
     <div class="container-fluid">
-        <!-- Header Card -->
+  
         <div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
             <div class="card-body px-4 py-3">
                 <div class="row align-items-center">
@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <!-- Form Section -->
+       
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -38,10 +38,34 @@
                         <h4 class="card-title">Post a New Notice</h4>
                     </div>
 
+   @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+              
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+              
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                     
                         <form action="{{ route('storeNotice') }}" method="POST">
                         @csrf
-                        <!-- Notice Title -->
+                        
                         <div class="card-body">
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
@@ -52,7 +76,6 @@
                                 </div>
                             </div>
 
-                            <!-- Notice Content -->
                             <div class="form-group mb-0 mt-3">
                                 <div class="row align-items-center">
                                     <label for="notice_content" class="col-3 text-end col-form-label">Notice Content</label>
@@ -62,7 +85,7 @@
                                 </div>
                             </div>
 
-                            <!-- Publish Date -->
+                           
                             <div class="form-group mb-0 mt-3">
                                 <div class="row align-items-center">
                                     <label for="publish_date" class="col-3 text-end col-form-label">Publish Date</label>
@@ -72,7 +95,7 @@
                                 </div>
                             </div>
 
-                            <!-- Status -->
+                          
                             <div class="form-group mb-0 mt-3">
                                 <div class="row align-items-center">
                                     <label for="status" class="col-3 text-end col-form-label">Status</label>
@@ -96,7 +119,7 @@
                 </div>
             </div>
         </div>
-        <!-- End Row -->
+       
     </div>
 </div>
 

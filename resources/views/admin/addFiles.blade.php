@@ -29,8 +29,9 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-lg-6">
+       
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
                 <div class="card">
                     <div class="border-bottom title-part-padding">
                         <h4 class="card-title mb-0">Enter Folder Details</h4>
@@ -74,9 +75,7 @@
             </div>
         </div>
 
-        <div class="text-end">
-            <a href="{{ route('manageFiles') }}" class="btn btn-primary">Add</a>
-        </div>
+       
     </div>
 </div>
 

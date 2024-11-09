@@ -29,10 +29,10 @@
             </div>
         </div>
         
-        <!-- Row -->
+       
         <div class="row">
             <div class="col-12">
-                <!-- Display Success Message -->
+              
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ session('success') }}
@@ -40,7 +40,7 @@
                     </div>
                 @endif
                 
-                <!-- Display Validation Errors -->
+              
                 @if ($errors->any())
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <ul class="mb-0">
@@ -52,7 +52,7 @@
                     </div>
                 @endif
 
-                <!-- start Employee Timing -->
+               
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Add Award</h4>
@@ -60,7 +60,7 @@
                     <form class="form-horizontal r-separator" method="POST" action="{{ route('storeAward') }}">
                     @csrf
                         <div class="card-body">
-                            <!-- Employee ID -->
+                          
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
                                     <label for="employeeId" class="col-3 text-end col-form-label">Employee ID</label>
@@ -136,7 +136,7 @@
               
             </div>
         </div>
-        <!-- End Row -->
+     
     </div>
 </div>
 

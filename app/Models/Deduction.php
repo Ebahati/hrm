@@ -15,9 +15,12 @@ class Deduction extends Model
         'amount',
     ];
 
-    // Define the relationship with Employee model
     public function employee()
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(Employee::class, 'employee_id', 'employee_id');
     }
 }
+
+
+
+ 

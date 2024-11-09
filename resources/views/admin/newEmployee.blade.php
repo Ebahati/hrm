@@ -49,7 +49,7 @@
                 </div>
             </div>
 
-            <!-- Employee Details Section -->
+         
             <div class="row">
                 <div class="col-lg-6">
                     <div class="card">
@@ -75,7 +75,7 @@
                                 <label class="form-label">Email</label>
                                 <div class="input-group">
                                     <input type="email" class="form-control" name="email" required>
-                                    <span class="input-group-text">@example.com</span>
+                                    <span class="input-group-text">@gmail.com</span>
                                 </div>
                             </div>
 
@@ -86,7 +86,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Marital Status</label>
-                                <select class="form-select" name="marital_status" required>
+                                <select class="form-select" name="marital_status">
                                     <option value="">Select</option>
                                     <option value="Single">Single</option>
                                     <option value="Married">Married</option>
@@ -125,7 +125,7 @@
 
                             <div class="mb-3">
                                 <label for="address" class="form-label">Address</label>
-                                <input type="text" class="form-control" id="address" name="address" placeholder="Address" required>
+                                <input type="text" class="form-control" id="address" name="address" placeholder="Address">
                             </div>
 
                             <div class="mb-3">
@@ -190,16 +190,16 @@
                                 <label for="accountNumber" class="form-label">Bank Account Number</label>
                                 <input type="text" class="form-control" id="accountNumber" name="account_number" placeholder="Account Number" required>
                             </div>
-
                             <div class="mb-3">
-                                <label class="form-label">Designation</label>
-                                <select class="form-select" name="designation" required>
+    <label class="form-label">Designation</label>
+    <select class="form-select" name="designation_id" required> 
         <option value="">Select</option>
         @foreach ($designations as $designation)
             <option value="{{ $designation->id }}">{{ $designation->name }}</option>
         @endforeach
     </select>
-                            </div>
+</div>
+           
 
                             <div class="mb-3">
                                 <label for="workPermit" class="form-label">Work Permit</label>
@@ -214,7 +214,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Qualifications Section -->
+           
             <div class="accordion mb-4" id="accordionExample">
                 <div class="accordion-item">
                     <h2 class="accordion-header">
@@ -253,7 +253,7 @@
             </div>
         </div>
 
-        <!-- Submit and Cancel Buttons -->
+       
         <div class="d-flex justify-content-end gap-3">
         <button type="submit" class="btn btn-primary">
             {{ isset($employee) ? 'Update Employee' : 'Add Employee' }}
@@ -268,9 +268,9 @@
     document.addEventListener('DOMContentLoaded', function() {
         const roleSelect = document.querySelector('select[name="role"]');
         const employeeIDInput = document.getElementById('employeeID');
-        const isEditing = employeeIDInput.hasAttribute('readonly'); // Check if editing
+        const isEditing = employeeIDInput.hasAttribute('readonly'); 
 
-        // Function to generate the employee ID based on the role
+       
         function generateEmployeeID(role) {
             let prefix;
             switch(role) {

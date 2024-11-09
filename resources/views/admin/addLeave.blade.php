@@ -59,15 +59,7 @@
                                 <div class="row align-items-center">
                                     <label for="employeeId" class="col-3 text-end col-form-label">Employee ID</label>
                                     <div class="col-9">
-                                    <select class="form-select" id="employeeId" name="employee_id" required onchange="updateEmployeeName()">
-                                            <option value="" disabled selected>Select Employee</option>
-                                            @foreach($employees as $employee)
-    <option value="{{ $employee->employee_id }}">
-        {{ $employee->employee_id }} - {{ $employee->name }}
-    </option>
-@endforeach
-
-                                        </select>
+                                    <input type="text" name="employee_id" class="form-control" value="{{ $employee->employee_id }}" readonly />
                                     </div>
                                 </div>
                             </div>
@@ -76,7 +68,7 @@
                                 <div class="row align-items-center">
                                     <label for="employeeName" class="col-3 text-end col-form-label">Employee Name</label>
                                     <div class="col-9">
-                                    <input type="text" id="employeeNameField" name="employee_name" class="form-control" readonly />
+                                    <input type="text" name="employee_name" class="form-control" value="{{ $employee->name }}" readonly />
 
                                     </div>
                                 </div>
@@ -139,23 +131,5 @@
     </div>
 </div>
 
-<script>
-function updateEmployeeName() {
-    var employeeSelect = document.getElementById("employeeId");
-    var employeeNameField = document.getElementById("employeeNameField");
-    var selectedOption = employeeSelect.options[employeeSelect.selectedIndex];
 
-  
-    var employeeName = "";
-    @foreach($employees as $employee)
-        if (selectedOption.value == "{{ $employee->employee_id }}") {
-            employeeName = "{{ $employee->name }}";
-        }
-    @endforeach
-
-  
-    employeeNameField.value = employeeName;
-}
-
-</script>
 @endsection

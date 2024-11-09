@@ -37,7 +37,7 @@
 
             @csrf
             <div class="card-body">
-              <!-- Employee ID -->
+            
               <div class="form-group mb-3">
                 <div class="row align-items-center">
                   <label for="employeeID" class="col-3 text-end col-form-label">Employee ID</label>
@@ -55,7 +55,7 @@
                 </div>
               </div>
 
-              <!-- Employee Name -->
+              
               <div class="form-group mb-3">
                 <div class="row align-items-center">
                   <label for="employeeName" class="col-3 text-end col-form-label">Employee Name</label>
@@ -65,7 +65,7 @@
                 </div>
               </div>
 
-          <!-- Payment Method -->
+        
 <div class="form-group mb-3">
   <div class="row align-items-center">
     <label class="col-3 text-end col-form-label">Payment Method</label>
@@ -79,7 +79,7 @@
   </div>
 </div>
 
-<!-- Installments -->
+
 <div class="form-group mb-3" id="installmentsDiv" style="display: none;">
   <div class="row align-items-center">
     <label for="installments" class="col-3 text-end col-form-label">Installments</label>
@@ -94,7 +94,7 @@
 
 
 
-              <!-- Date -->
+             
               <div class="form-group mb-3">
                 <div class="row align-items-center">
                   <label for="joiningDate" class="col-3 text-end col-form-label">Date</label>
@@ -105,7 +105,7 @@
                 </div>
               </div>
 
-              <!-- Amount -->
+          
               <div class="form-group mb-3">
                 <div class="row align-items-center">
                   <label for="amount" class="col-3 text-end col-form-label">Amount</label>
@@ -115,7 +115,7 @@
                 </div>
               </div>
 
-              <!-- Deducted Amount -->
+             
               <div class="form-group mb-3">
                 <div class="row align-items-center">
                   <label for="deductedAmount" class="col-3 text-end col-form-label">Amount to be deducted this month</label>
@@ -138,60 +138,58 @@
     </div>
   </div>
 </div>
-
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const employeeID = document.getElementById('employeeID');
     const employeeName = document.getElementById('employeeName');
+    const installmentsDiv = document.getElementById('installmentsDiv');
     const installments = document.getElementById('installments');
     const amount = document.getElementById('amount');
     const deductedAmount = document.getElementById('deductedAmount');
 
-  
+   
     employeeID.addEventListener('change', function () {
       const selectedOption = this.options[this.selectedIndex];
-      employeeName.value = selectedOption.getAttribute('data-name') || '';
+      employeeName.value = selectedOption.getAttribute('data-name') || ''; 
     });
 
-document.querySelectorAll('input[name="payment_method"]').forEach(function (input) {
-    input.addEventListener('change', function () {
-      if (this.value === 'installments') {
-        installmentsDiv.style.display = 'block'; 
-      } else {
-        installmentsDiv.style.display = 'none'; 
-        installments.value = ''; 
-        deductedAmount.value = (parseFloat(amount.value) || 0).toFixed(2); 
-      }
-    });
-  });
- 
-function calculateDeductedAmount() {
-  const totalAmount = parseFloat(amount.value) || 0;
-  const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
-  const numInstallments = parseFloat(installments.value) || 1; 
-  let perMonth;
-
-  if (paymentMethod === 'one_time') {
-   
-    deductedAmount.value = totalAmount.toFixed(2);
-  } else {
-  
-    if (numInstallments % 1 === 0) {
     
-      perMonth = (totalAmount / numInstallments).toFixed(2);
-    } else {
-      
-      perMonth = (totalAmount * numInstallments).toFixed(2);
+    document.querySelectorAll('input[name="payment_method"]').forEach(function (input) {
+      input.addEventListener('change', function () {
+        if (this.value === 'installments') {
+          installmentsDiv.style.display = 'block'; 
+        } else {
+          installmentsDiv.style.display = 'none'; 
+          installments.value = ''; 
+          deductedAmount.value = (parseFloat(amount.value) || 0).toFixed(2); 
+        }
+      });
+    });
+
+    // Calculate the deducted amount
+    function calculateDeductedAmount() {
+      const totalAmount = parseFloat(amount.value) || 0;
+      const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
+      const numInstallments = parseFloat(installments.value) || 1; 
+      let perMonth;
+
+      if (paymentMethod === 'one_time') {
+        deductedAmount.value = totalAmount.toFixed(2);
+      } else {
+        if (numInstallments % 1 === 0) {
+          perMonth = (totalAmount / numInstallments).toFixed(2);
+        } else {
+          perMonth = (totalAmount * numInstallments).toFixed(2);
+        }
+        deductedAmount.value = perMonth;
+      }
     }
-    deductedAmount.value = perMonth;
-  }
-}
 
-
-    / Attach event listeners for real-time calculation
+  
     amount.addEventListener('input', calculateDeductedAmount);
     installments.addEventListener('input', calculateDeductedAmount);
   });
 </script>
+
 
 @endsection

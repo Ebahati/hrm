@@ -1,4 +1,4 @@
-@extends('admin.layouts.app') 
+@extends('admin.layouts.app')
 
 @section('title', 'Dashboard')
 
@@ -29,28 +29,44 @@
             </div>
         </div>
 
-        <!-- Row -->
+       
         <div class="row">
             <div class="col-12">
-                <!-- start Employee Timing -->
+                
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Add Bonuses</h4>
                     </div>
 
-                    <form action="{{ route('storeBonus') }}" method="POST" class="form-horizontal r-separator">
-                        @csrf
+                    
+                    <form action="{{ isset($bonus) ? route('updateBonus', $bonus->id) : route('storeBonus') }}" method="POST">
+    @csrf
+    @if(isset($bonus))
+        @method('PUT') 
+    @endif
                         <div class="card-body">
+                           
+                            @if($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
                                     <label for="employee_id" class="col-3 text-end col-form-label">Employee ID</label>
                                     <div class="col-9 border-start pb-2 pt-2">
-                                        <select id="employeeSelect" class="form-select" name="employee_id" onchange="updateEmployeeName()">
-                                            <option value="">Select Employee</option>
-                                            @foreach($employees as $employee)
-                                                <option value="{{ $employee->id }}" data-name="{{ $employee->name }}">{{ $employee->employee_id }}</option>
-                                            @endforeach
-                                        </select>
+                                    <select id="employeeSelect" class="form-select" name="employee_id" onchange="updateEmployeeName()">
+    <option value="">Select Employee</option>
+    @foreach($employees as $employee)
+        <option value="{{ $employee->employee_id }}" data-name="{{ $employee->name }}">{{ $employee->employee_id }}</option>
+    @endforeach
+</select>
+
                                     </div>
                                 </div>
                             </div>
@@ -59,7 +75,7 @@
                                 <div class="row align-items-center">
                                     <label for="employee_name" class="col-3 text-end col-form-label">Employee Name</label>
                                     <div class="col-9 border-start pb-2 pt-2">
-                                        <input type="text" id="employee_name" class="form-control" name="employee_name" readonly>
+                                        <input type="text" id="employee_name" class="form-control" name="employee_name" value="{{ old('employee_name') }}" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -68,26 +84,25 @@
                                 <div class="row align-items-center">
                                     <label for="bonus_type" class="col-3 text-end col-form-label">Type of Bonus</label>
                                     <div class="col-9 border-start pb-2 pt-2">
-                                        <input type="text" class="form-control" name="bonus_type" placeholder="Enter Bonus Type" required>
+                                        <input type="text" class="form-control" name="bonus_type" value="{{ old('bonus_type') }}" placeholder="Enter Bonus Type" required>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group mb-0">
-    <div class="row align-items-center">
-        <label for="date" class="col-3 text-end col-form-label">Date</label>
-        <div class="col-9 border-start pb-2 pt-2">
-            <input type="date" class="form-control" name="date" id="date" required min="{{ date('Y-m-d') }}">
-        </div>
-    </div>
-</div>
-
+                                <div class="row align-items-center">
+                                    <label for="date" class="col-3 text-end col-form-label">Date</label>
+                                    <div class="col-9 border-start pb-2 pt-2">
+                                        <input type="date" class="form-control" name="date" id="date" required min="{{ date('Y-m-d') }}" value="{{ old('date') }}">
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="form-group mb-0">
                                 <div class="row align-items-center">
                                     <label for="amount" class="col-3 text-end col-form-label">Amount</label>
                                     <div class="col-9 border-start pb-2 pt-2">
-                                        <input type="number" class="form-control" name="amount" step="0.01" required>
+                                        <input type="number" class="form-control" name="amount" value="{{ old('amount') }}" step="0.01" required>
                                     </div>
                                 </div>
                             </div>
@@ -96,7 +111,7 @@
                                 <div class="row align-items-center">
                                     <label for="description" class="col-3 text-end col-form-label">Description</label>
                                     <div class="col-9 border-start pb-2 pt-2">
-                                        <input type="text" class="form-control" name="description" placeholder="Optional">
+                                        <input type="text" class="form-control" name="description" value="{{ old('description') }}" placeholder="Optional">
                                     </div>
                                 </div>
                             </div>
@@ -104,29 +119,31 @@
 
                         <div class="p-3 border-top">
                             <div class="form-group mb-0 text-end">
-                                <button type="submit" class="btn btn-primary">Add Bonus</button>
+                            <button type="submit" class="btn btn-primary">
+        {{ isset($bonus) ? 'Update Bonus' : 'Add Bonus' }}
+    </button>
                                 <a href="{{ route('manageBonus') }}" class="btn bg-danger-subtle text-danger ms-6">Cancel</a>
                             </div>
                         </div>
                     </form>
 
                 </div>
-                <!-- end Employee Timing -->
+               
             </div>
         </div>
-        <!-- End Row -->
+        
     </div>
 </div>
-
 <script>
     function updateEmployeeName() {
         const employeeSelect = document.getElementById('employeeSelect');
         const employeeNameInput = document.getElementById('employee_name');
         const selectedOption = employeeSelect.options[employeeSelect.selectedIndex];
 
-       
-        employeeNameInput.value = selectedOption.getAttribute('data-name') || '';
+      
+        employeeNameInput.value = selectedOption ? selectedOption.getAttribute('data-name') : '';
     }
 </script>
+
 
 @endsection

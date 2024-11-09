@@ -37,10 +37,13 @@ class NoticeController extends Controller
         return redirect()->route('manageNotice')->with('success', 'Notice posted successfully.');
     }
 
-    public function destroy(Notice $notice)
-{
-    $notice->delete(); // Delete the notice
-    return redirect()->route('manageNotice')->with('success', 'Notice deleted successfully.');
-}
+  
+    public function destroy($id)
+    {
+        $holiday = Notice::findOrFail($id);
+        $holiday->delete();  
+    
+        return redirect()->route('manageNotice')->with('success', 'Notice deleted successfully!');
+    }
 
 }

@@ -5,6 +5,27 @@
 @section('content')
 <div class="body-wrapper">
     <div class="container-fluid">
+    @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @elseif (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+      
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
             <div class="card-body px-4 py-3">
                 <div class="row align-items-center">
@@ -41,12 +62,13 @@
             <div class="row align-items-center">
                 <label for="employeeSelect" class="col-3 text-end col-form-label">Employee ID</label>
                 <div class="col-9 border-start pb-2 pt-2">
-                    <select id="employeeSelect" class="form-select" name="employee_id" onchange="updateEmployeeName()">
-                        <option value="">Select Employee</option>
-                        @foreach($employees as $employee)
-                            <option value="{{ $employee->id }}">{{ $employee->employee_id }}</option>
-                        @endforeach
-                    </select>
+                <select id="employeeSelect" class="form-select" name="employee_id" onchange="updateEmployeeName()">
+    <option value="">Select Employee</option>
+    @foreach($employees as $employee)
+        <option value="{{ $employee->employee_id }}">{{ $employee->employee_id }}</option>
+    @endforeach
+</select>
+
                 </div>
             </div>
         </div>
@@ -78,7 +100,7 @@
             <div class="row align-items-center">
                 <label for="deduction_reason" class="col-3 text-end col-form-label">Reason</label>
                 <div class="col-9 border-start pb-2 pt-2">
-                    <input type="text" name="deduction_reason" class="form-control" />
+                    <input type="text" name="deduction_reason" class="form-control" required/>
                 </div>
             </div>
         </div>
@@ -96,20 +118,22 @@
         </div>
     </div>
 </div>
-
 <script>
-    const employees = @json($employees);
+    const employees = @json($employees); 
 
     function updateEmployeeName() {
-        const selectedEmployeeId = document.getElementById('employeeSelect').value;
-        const employeeNameField = document.getElementById('employeeName');
+        const selectedEmployeeId = document.getElementById('employeeSelect').value; 
+        const employeeNameField = document.getElementById('employeeName'); 
 
-        const selectedEmployee = employees.find(employee => employee.id === parseInt(selectedEmployeeId));
+     
+        const selectedEmployee = employees.find(employee => employee.employee_id === selectedEmployeeId);
+
         if (selectedEmployee) {
             employeeNameField.value = selectedEmployee.name; 
         } else {
-            employeeNameField.value = '';
+            employeeNameField.value = ''; 
         }
     }
 </script>
+
 @endsection

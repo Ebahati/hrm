@@ -9,7 +9,7 @@ class Bonus extends Model
 {
     use HasFactory;
 
-    // Specify which fields are fillable
+    
     protected $fillable = [
         'employee_id',
         'bonus_type',
@@ -18,9 +18,10 @@ class Bonus extends Model
         'description',
     ];
 
-    // Relationship with Employee model
+    
     public function employee()
     {
-        return $this->belongsTo(Employee::class);
+        
+        return $this->belongsTo(Employee::class, 'employee_id', 'employee_id');
     }
 }

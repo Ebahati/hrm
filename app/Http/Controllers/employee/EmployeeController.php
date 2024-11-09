@@ -11,7 +11,8 @@ class EmployeeController extends Controller
 {
     public function store(Request $request)
     {
-        // Validate the incoming data
+       
+       
         $validated = $request->validate([
             'employee_id' => 'required|unique:employees,employee_id',
             'name' => 'required|string|max:255',
@@ -32,21 +33,21 @@ class EmployeeController extends Controller
             'branch_name' => 'required',
             'branch_code' => 'required|digits:5',
             'account_number' => 'required',
-            'designation' => 'required',
+             'designation_id' => 'required',
             'work_permit' => 'nullable',
             'joining_date' => 'required|date|after_or_equal:today',
         ]);
 
-        // Create a new employee
+       
         Employee::create($validated);
 
-        // Redirect back with a success message
+       
         return redirect()->route('dashboard')->with('success', 'Employee added successfully.');
     }
 
     public function manage()
     {
-        // Eager load the designation relationship
+       
         $employees = Employee::with('designation')->get(); 
         return view('admin.manageEmployee', compact('employees'));
     }
@@ -69,8 +70,8 @@ class EmployeeController extends Controller
     public function edit($id)
     {
         $employee = Employee::findOrFail($id);
-        $departments = Department::all(); // Fetch all departments
-        $designations = Designation::all(); // Fetch all designations
+        $departments = Department::all(); 
+        $designations = Designation::all(); 
 
         return view('admin.newEmployee', compact('employee', 'departments', 'designations'));
     }
@@ -99,12 +100,12 @@ class EmployeeController extends Controller
             'branch_name' => 'required',
             'branch_code' => 'required|digits:5',
             'account_number' => 'required',
-            'designation' => 'required',
+            'designation_id' => 'required',
             'work_permit' => 'nullable',
             'joining_date' => 'required|date|after_or_equal:today',
         ]);
 
-        // Update employee data
+       
         $employee->update($validated);
 
         return redirect()->route('manageEmployee')->with('success', 'Employee updated successfully.');

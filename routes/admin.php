@@ -44,21 +44,21 @@ Route::delete('/salary/delete/{id}', [SalaryController::class, 'destroy'])->name
 Route::get('/employee/{employee_id}/salary', [SalaryController::class, 'getEmployeeSalary']);
 Route::get('/generate-payslip', [SalaryController::class, 'showPayslipGenerationForm'])->name('generate.payslip');
 Route::post('/generate-payslip', [SalaryController::class, 'generatePayslip'])->name('generatePayslip');
-Route::get('/salary-payments', function () {
-    return view('admin.salaryPayments'); 
-})->name('salaryPayments');
+Route::get('/salary-payments', [SalaryController::class, 'showSalaryPayments'])->name('salaryPayments');
+Route::post('/pay-salary', [SalaryController::class, 'paySalary'])->name('submitPaySalary');
+Route::get('/payment-list', [SalaryController::class, 'showPaymentList'])->name('paymentList');
 
-
-Route::get('/increment-list', function () {
-    return view('admin.incrementList'); 
-})->name('incrementList');
+// notification 
+Route::post('/notification/{id}/read', [SalaryController::class, 'markAsRead'])->name('notification.read');
+Route::delete('/notification/{id}/delete', [SalaryController::class, 'deleteNotification'])->name('notification.delete');
 
 // Bonus
 Route::get('/bonuses', [SalaryController::class, 'createBonusForm'])->name('addBonus');
 Route::post('/bonus/store', [SalaryController::class, 'storeBonus'])->name('storeBonus');
 Route::get('/bonuses/manage', [SalaryController::class, 'manageBonuses'])->name('manageBonus');
-Route::get('/bonuses/edit/{id}', [SalaryController::class, 'editBonus'])->name('editBonus');
-Route::delete('/bonuses/delete/{id}', [SalaryController::class, 'deleteBonus'])->name('deleteBonus');
+Route::get('/bonus/{id}/edit', [SalaryController::class, 'edit'])->name('editBonus');
+Route::put('/bonus/{id}', [SalaryController::class, 'store'])->name('updateBonus');
+Route::delete('/bonus/{id}', [SalaryController::class, 'deleteBonus'])->name('deleteBonus');
 
 //deductions
 Route::get('/deductions/create', [SalaryController::class, 'createDeductionForm'])->name('createDeduction');
@@ -67,12 +67,18 @@ Route::get('/manage-deductions', [SalaryController::class, 'manageDeductions'])-
 Route::get('/edit-deductions', function () {
     return view('admin.editDeductions'); 
 })->name('editDeductions');
-Route::delete('/deductions/{id}', [SalaryController::class, 'destroy'])->name('deleteDeduction');
+Route::delete('/deductions/{id}', [SalaryController::class, 'deleteDeduction'])->name('deleteDeduction');
+
 // loan
 Route::post('/loans', [LoanController::class, 'store'])->name('loans.store');
 Route::get('/manage-loan', [LoanController::class, 'manageLoans'])->name('manageLoan'); 
 Route::get('/add-loan', [LoanController::class, 'create'])->name('addLoan');
-Route::post('/loans/{id}/update', [LoanController::class, 'update'])->name('loans.update');
+Route::get('/loan/{id}/edit', [LoanController::class, 'edit'])->name('editLoan');
+Route::post('/loan/{id}/update', [LoanController::class, 'update'])->name('loans.update');
+
+
+
+
 Route::post('/loans/{id}/clear', [LoanController::class, 'clearLoan'])->name('loans.clear');
 //attendance
 Route::get('/manage-attendance', function () {
@@ -94,7 +100,6 @@ Route::get('/expense-list', [ExpenseController::class, 'showExpenses'])->name('e
 
 //leave
 Route::get('/manage-leave', [LeaveController::class, 'manageLeaves'])->name('manageLeave');
-
 Route::get('/leave-reports', [LeaveController::class, 'showReports'])->name('leaveReports');
 Route::post('/leave-reports/approve/{id}', [LeaveController::class, 'approve'])->name('approveLeave');
 Route::post('/leave-reports/reject/{id}', [LeaveController::class, 'reject'])->name('rejectLeave');
@@ -111,8 +116,9 @@ Route::get('/add-notice', function () {
 })->name('addNotice');
 Route::get('/manage-notice', [NoticeController::class, 'index'])->name('manageNotice');
 Route::post('/notices', [NoticeController::class, 'store'])->name('storeNotice');
-Route::delete('/notices/{notice}', [NoticeController::class, 'destroy'])->name('notices.destroy');
+
 Route::get('/notices/{id}', [NoticeController::class, 'show'])->name('viewNotice');
+Route::delete('/notices/{id}', [NoticeController::class, 'destroy'])->name('deleteNotice');
 
 //  files
 Route::get('/manage-files', [FileController::class, 'manageFiles'])->name('manageFiles');
@@ -146,3 +152,4 @@ Route::delete('/Holiday/delete/{id}', [HolidayController::class, 'destroy'])->na
 Route::get('/edit-holiday/{id}', [HolidayController::class, 'edit'])->name('editHoliday');
 Route::put('/update-holiday/{id}', [HolidayController::class, 'update'])->name('updateHoliday');
 Route::put('/update-holiday/{id}', [HolidayController::class, 'update'])->name('updateHoliday');
+Route::delete('/holiday/{id}', [HolidayController::class, 'destroy'])->name('deleteHoliday');
