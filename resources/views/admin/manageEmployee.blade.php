@@ -27,7 +27,19 @@
                     </div>
                 </div>
             </div>
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
 
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ session('error') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             <div class="datatables">
                 <div class="card">
                     <div class="card-body">
@@ -81,7 +93,9 @@
                 <td>{{ $employee->id_number }}</td>
                 <td>{{ $employee->address }}</td>
                 <td>{{ $employee->permanent_address }}</td>
-                <td>{{ $employee->department }}</td>
+                <td>{{ $employee->department ? $employee->department->name : 'No department assigned' }}
+
+                </td>
                 <td>{{ $employee->role }}</td>
                 <td>{{ $employee->nhif }}</td>
                 <td>{{ $employee->nssf }}</td>
@@ -89,9 +103,8 @@
                 <td>{{ $employee->branch_name }}</td>
                 <td>{{ $employee->branch_code }}</td>
                 <td>{{ $employee->account_number }}</td>
-                
-               
-                <td>{{ $employee->designation->name }}</td>
+                <td>{{ $employee->designation ? $employee->designation->name : 'No Designation assigned' }}</td>
+
 
                 <td>{{ $employee->work_permit }}</td>
                 <td>{{ $employee->joining_date }}</td>
@@ -99,14 +112,13 @@
                 <td>{{ $employee->professional_qualifications }}</td>
                 <td>{{ $employee->experience }}</td>
                 <td>
-                    <div class="d-flex align-items-center gap-3">
-                        <a href="{{ route('editEmployee', $employee->id) }}" class="btn btn-primary">Edit</a>
-                        <form action="{{ route('manageEmployee.destroy', $employee->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn bg-danger-subtle text-danger">Delete</button>
-                        </form>
-                    </div>
+                <a href="{{ route('editEmployee', ['employee_id' => $employee->employee_id]) }}" class="btn btn-primary">Edit</a>
+                <form action="{{ route('deleteEmployee', ['employee_id' => $employee->employee_id]) }}" method="POST" style="display:inline;">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this employee?');">Delete</button>
+</form>
+
                 </td>
             </tr>
         @endforeach

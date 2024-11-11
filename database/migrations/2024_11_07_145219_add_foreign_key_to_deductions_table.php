@@ -11,22 +11,22 @@ class AddForeignKeyToDeductionsTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
-        Schema::table('deductions', function (Blueprint $table) {
-            $table->foreign('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');
-        });
-    }
+    // public function up()
+    // {
+    //     Schema::table('deductions', function (Blueprint $table) {
+    //         $table->foreign('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');
+    //     });
+    // }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::table('deductions', function (Blueprint $table) {
-            $table->dropForeign(['employee_id']);
-        });
-    }
+    // /**
+    //  * Reverse the migrations.
+    //  *
+    //  * @return void
+    //  */
+    // public function down()
+    // {
+    //     Schema::table('deductions', function (Blueprint $table) {
+    //         $table->dropForeign(['employee_id']);
+    //     });
+    // }
 }

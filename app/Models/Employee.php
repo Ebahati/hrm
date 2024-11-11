@@ -24,7 +24,7 @@ public $incrementing = false;
         'id_number',
         'address',
         'permanent_address',
-       'department', 
+       'department_id', 
         'role',
         'nhif',
         'nssf',
@@ -72,9 +72,9 @@ public function notifications()
     }
 
 public function department()
-   {
-    return $this->belongsTo(Department::class, 'department_id'); 
-   }
+{
+    return $this->belongsTo(Department::class);
+}
 
 
 }

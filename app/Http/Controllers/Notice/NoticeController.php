@@ -6,18 +6,18 @@ use App\Models\Notice;
 
 class NoticeController extends Controller
 {
-    // Method to display all notices on the Manage Notice page
+    
     public function index()
     {
-        $notices = Notice::all(); // Fetch all notices
+        $notices = Notice::all(); 
         return view('admin.manageNotice', compact('notices'));
     }
     public function show($id)
     {
-        $notice = Notice::findOrFail($id); // Fetch notice or throw 404 if not found
+        $notice = Notice::findOrFail($id); 
         return view('admin.viewNotice', compact('notice'));
     }
-    // Method to store a new notice
+
     public function store(Request $request)
     {
         $request->validate([

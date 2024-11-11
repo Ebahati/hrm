@@ -1,0 +1,12 @@
+services:
+  mailpit:
+    image: mailpit/mailpit
+    ports:
+      - "1025:1025"  # SMTP port for Mailpit
+      - "8025:8025"  # Web UI port for Mailpit
+    networks:
+      - mailpit_network
+
+networks:
+  mailpit_network:
+    driver: bridge

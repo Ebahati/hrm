@@ -19,14 +19,17 @@ Auth::routes();
 
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 //employee admin
-Route::group(['middleware' => ['role:SuperAdmin,SubAdmin']], function () {
+
+   
 Route::get('/new-employee', [EmployeeController::class, 'create'])->name('newEmployee');
 Route::post('/employees/store', [EmployeeController::class, 'store'])->name('employees.store');
-Route::get('/employees/edit/{id}', [EmployeeController::class, 'edit'])->name('editEmployee');
-Route::post('/employees/update/{id}', [EmployeeController::class, 'update'])->name('employees.update');
+Route::get('/employee/{employee_id}/edit', [EmployeeController::class, 'edit'])->name('editEmployee');
+// In your routes/web.php
+Route::put('/employee/{employee_id}/update', [EmployeeController::class, 'update'])->name('employee.update');
+
 Route::get('/manage-employee', [EmployeeController::class, 'manage'])->name('manageEmployee');
-Route::delete('/employees/delete/{id}', [EmployeeController::class, 'destroy'])->name('manageEmployee.destroy');
-});
+Route::delete('/employee/{employee_id}/delete', [EmployeeController::class, 'destroy'])->name('deleteEmployee');
+
 //employee
 Route::middleware(['auth', 'employee.access'])->group(function () {
     Route::get('/add-leave', [LeaveController::class, 'showLeaveApplicationForm'])->name('addLeave');
@@ -66,10 +69,9 @@ Route::delete('/bonus/{id}', [SalaryController::class, 'deleteBonus'])->name('de
 Route::get('/deductions/create', [SalaryController::class, 'createDeductionForm'])->name('createDeduction');
 Route::post('/deductions/store', [SalaryController::class, 'store'])->name('storeDeduction');
 Route::get('/manage-deductions', [SalaryController::class, 'manageDeductions'])->name('manageDeductions');
-Route::get('/edit-deductions', function () {
-    return view('admin.editDeductions'); 
-})->name('editDeductions');
+Route::get('/edit-deductions/{id}', [SalaryController::class, 'editDeductions'])->name('editDeductions');
 Route::delete('/deductions/{id}', [SalaryController::class, 'deleteDeduction'])->name('deleteDeduction');
+Route::put('/update-deduction/{id}', [SalaryController::class, 'updateDeduction'])->name('updateDeduction');
 
 // loan
 Route::post('/loans', [LoanController::class, 'store'])->name('loans.store');

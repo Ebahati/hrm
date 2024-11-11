@@ -166,6 +166,14 @@
        
         <div id="login">
             <div class="az-signup-header"><h4>Hey there! Welcome</h4>
+            <div class="pt-3 text-danger" id="log_msg">
+    @error('employee_id')
+        <script>
+            document.getElementById('log_msg').textContent = '{{ $message }}';
+        </script>
+    @enderror
+</div>
+
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
                     <div class="form-group">

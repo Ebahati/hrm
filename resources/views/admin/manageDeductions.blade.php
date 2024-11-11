@@ -62,7 +62,7 @@
                             <tbody>
     @foreach($deductions as $deduction)
         <tr>
-            <td>{{ $deduction->employee ? $deduction->employee->name : 'No employee' }}</td> <!-- Check if employee exists -->
+            <td>{{ $deduction->employee ? $deduction->employee->name : 'No employee' }}</td> 
           <td>{{ $deduction->employee && $deduction->employee->designation ? $deduction->employee->designation->name : 'No designation' }}</td>
 
             <td>{{ $deduction->deduction_reason ?? 'No reason provided' }}</td>
@@ -70,7 +70,8 @@
             <td>Ksh.{{ number_format($deduction->amount, 2) }}</td>
             <td>
                 <div class="d-flex align-items-center gap-3">
-                    <a href="{{ route('editDeductions', $deduction->id) }}" class="btn btn-primary">Edit</a>
+                <a href="{{ route('editDeductions', ['id' => $deduction->id]) }}"class="btn btn-primary"> Edit Deduction</a>
+                  
                     <form action="{{ route('deleteDeduction', $deduction->id) }}" method="POST" style="display:inline;">
     @csrf
     @method('DELETE')

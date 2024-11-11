@@ -132,7 +132,12 @@
                           </div>
                         </div>
                         <div>
-                        <a href="{{ route('viewNotice', $latestNotice->id) }}" class="btn btn-primary w-100">
+                        @if ($latestNotice)
+    <a href="{{ route('viewNotice', $latestNotice->id) }}" class="btn btn-primary w-100">View Notice</a>
+@else
+    <p>No notices available.</p>
+@endif
+
     View Full Report
 </a>
 

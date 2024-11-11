@@ -62,6 +62,30 @@ public function deleteDeduction($id)
         $deductions = Deduction::with('employee')->get(); 
         return view('admin.manageDeductions', compact('deductions'));
     }
+
+    public function editDeductions($id)
+    {
+       
+        $deduction = Deduction::findOrFail($id);
+    
+        $employees = Employee::all();  
+    
+   
+        return view('admin.editDeductions', compact('deduction', 'employees'));
+    }
+    
+
+    public function updateDeduction(Request $request, $id)
+{
+   
+    $deduction = Deduction::findOrFail($id);
+
+
+    $deduction->update($request->all());
+
+    
+        return redirect()->route('manageDeductions')->with('success', 'Deduction updated successfully');
+    }
     
 
     public function createBonusForm()

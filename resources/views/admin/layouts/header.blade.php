@@ -153,17 +153,50 @@
                         <div class="d-flex align-items-center py-9 mx-7 border-bottom">
                           <img src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/images/profile/user-1.jpg" class="rounded-circle" width="80" height="80" alt="modernize-img" />
                           <div class="ms-3">
-                          <h5 class="mb-1 fs-3">{{ Auth::user()->employee_id }}</h5>
-                          <span class="mb-1 d-block">{{ Auth::user()->employee->designation->name }}</span>
-                          <span class="mb-1 d-block">{{ Auth::user()->employee->name }}</span>
-                         
-<span class="mb-1 d-block">{{ Auth::user()->employee->phone }}</span>
+                          @if (Auth::check())
+    <h5 class="mb-1 fs-3">{{ Auth::user()->employee_id }}</h5>
+@else
+    <p>Please log in to view your employee ID.</p>
+@endif
+
+<span class="mb-1 d-block">
+    @if(Auth::check() && Auth::user()->employee && Auth::user()->employee->designation)
+        {{ Auth::user()->employee->designation->name }}
+    @else
+        No Designation Assigned
+    @endif
+</span>
+
+
+<span class="mb-1 d-block">
+    @if(Auth::check() && Auth::user()->employee)
+        {{ Auth::user()->employee->name }}
+    @else
+        No Employee Assigned
+    @endif
+</span>
+
+<span class="mb-1 d-block">
+    @if(Auth::check() && Auth::user()->employee)
+        {{ Auth::user()->employee->phone }}
+    @else
+        No Phone Assigned
+    @endif
+</span>
+
 
 
 
                             <p class="mb-0 d-flex align-items-center gap-2">
                             <i class="fas fa-envelope fs-4"></i>
-                            {{ Auth::user()->employee->email }} 
+                            <span class="mb-1 d-block">
+    @if(Auth::check() && Auth::user()->employee)
+        {{ Auth::user()->employee->email }}
+    @else
+        No Employee Assigned
+    @endif
+</span>
+
                             </p>
                           </div>
                         </div>

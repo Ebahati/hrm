@@ -56,7 +56,9 @@
 
 
                                             <td>{{ $bonus->bonus_type }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($bonus->date)->format('F Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($bonus->date)->format('F j, Y') }}</td>
+
+
                                             <td>Ksh.{{ number_format($bonus->amount, 2) }}</td>
                                             <td>
     <div class="d-flex align-items-center gap-2">

@@ -50,14 +50,25 @@ public function store(Request $request)
 
    
 
+public function destroy($id)
+{
 
-    public function destroy($id)
-    {
-        $department = Department::findOrFail($id);
-        $department->delete();
+    $department = Department::findOrFail($id);
 
-        return redirect()->route('manageDepartments')->with('success', 'Department deleted successfully.');
-    }
+   
+    \App\Models\Notification::whereIn('employee_id', function($query) use ($department) {
+        $query->select('id')
+              ->from('employees')
+              ->where('department_id', $department->id);
+    })->update(['employee_id' => null]);
+
+   
+    $department->delete();
+
+   
+    return redirect()->route('manageDepartments')->with('success', 'Department deleted successfully.');
+}
+
 }
 
 

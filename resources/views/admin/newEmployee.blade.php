@@ -19,15 +19,14 @@
 
         <h2>{{ isset($employee) ? 'Edit Employee' : 'Add New Employee' }}</h2>
 
-    <form action="{{ isset($employee) ? route('employees.update', $employee->id) : route('employees.store') }}" method="POST">
-        @csrf
-        @if(isset($employee))
-            @method('POST') {{-- For Update --}}
-        @endif
-
+        <form action="{{ isset($employee) ? route('employees.update', $employee->id) : route('employees.store') }}" method="POST">
+    @csrf
+    @if(isset($employee))
+        @method('POST')
+    @endif
        
 
-            <!-- Header Card -->
+           
             <div class="card bg-info-subtle shadow-none mb-4">
                 <div class="card-body px-4 py-3">
                     <div class="row align-items-center">
@@ -141,7 +140,7 @@
                         <div class="card-body p-4">
                             <div class="mb-3">
                                 <label class="form-label">Department</label>
-                                <select class="form-select" name="department" required>
+                                <select class="form-select" name="department_id" required>
                     <option value="">Select</option>
                     @foreach($departments as $department)
                         <option value="{{ $department->id }}">{{ $department->name }}</option>
