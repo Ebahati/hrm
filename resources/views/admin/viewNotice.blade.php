@@ -35,10 +35,28 @@
                     </span>
                 </p>
             </div>
-            <div class="card-footer">
-                <a href="{{ route('dashboard') }}" class="btn btn-secondary">Back</a>
+           
+        </div>
+
+       
+        <div class="card mt-4">
+            <div class="card-header text-bg-success">
+                <h5 class="mb-0 text-white">Holidays</h5>
+            </div>
+            <div class="card-body">
+                <ul>
+                    @foreach($holidays as $holiday)
+                        <li><strong>{{ $holiday->name }}</strong> ({{ $holiday->date }})</li>
+                    @endforeach
+                </ul>
             </div>
         </div>
+        <div class="card-footer">
+                <a href="{{ route('dashboard') }}" class="btn btn-secondary">Back</a>
+            </div>
     </div>
+    
 </div>
+
+
 @endsection

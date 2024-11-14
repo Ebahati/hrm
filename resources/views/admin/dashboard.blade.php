@@ -3,6 +3,12 @@
 @section('title', 'Dashboard')
 
 @section('content')
+
+@php
+$currentDate = now()->format('d, F Y'); 
+@endphp
+
+
 <div class="toast toast-onload align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true" id="greetingToast">
     <div class="toast-body hstack align-items-start gap-6">
         <i class="fas fa-check-circle fs-6"></i>
@@ -90,12 +96,11 @@
                       <h4 class="card-title fw-semibold"> Updates</h4>
                       <p class="card-subtitle mb-0">Latest Info</p>
                     </div>
-                    <select class="form-select w-auto">
-                      <option value="1">March 2024</option>
-                      <option value="2">April 2024</option>
-                      <option value="3">May 2024</option>
-                      <option value="4">June 2024</option>
-                    </select>
+                  
+      
+                <p><strong>Date:</strong> <span>{{ $currentDate }}</span></p>
+
+
                   </div>
                   <div class="row align-items-center">
                     <div class="col-md-8">
@@ -133,12 +138,12 @@
                         </div>
                         <div>
                         @if ($latestNotice)
-    <a href="{{ route('viewNotice', $latestNotice->id) }}" class="btn btn-primary w-100">View Notice</a>
+    <a href="{{ route('viewNotice', $latestNotice->id) }}" class="btn btn-primary w-100">Full report</a>
 @else
     <p>No notices available.</p>
 @endif
 
-    View Full Report
+   
 </a>
 
                         </div>

@@ -59,14 +59,11 @@
                 </div>
             </div>
         </div>
-        <button type="button" data-repeater-create class="btn btn-success hstack gap-6">
-            Upload More Files
-            <i class="fas fa-plus ms-1 fs-5"></i>
-        </button>
+       
     </div>
 
     <div class="text-end">
-        <button type="submit" class="btn btn-primary">Upload</button>
+        <button type="submit" class="btn btn-primary">Upload  <i class="fas fa-plus ms-1 fs-5"></i></button>
     </div>
 </form>
 

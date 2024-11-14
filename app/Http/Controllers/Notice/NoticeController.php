@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Notice;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Notice;
-
+use App\Models\Holiday; 
 class NoticeController extends Controller
 {
     
@@ -14,8 +14,10 @@ class NoticeController extends Controller
     }
     public function show($id)
     {
-        $notice = Notice::findOrFail($id); 
-        return view('admin.viewNotice', compact('notice'));
+        $notice = Notice::findOrFail($id);
+        $holidays = Holiday::all();  
+
+        return view('admin.viewNotice', compact('notice', 'holidays'));
     }
 
     public function store(Request $request)

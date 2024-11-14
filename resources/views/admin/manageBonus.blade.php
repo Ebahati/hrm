@@ -31,6 +31,17 @@
             <div class="datatables">
                 <div class="card">
                     <div class="card-body">
+                    @if(session('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+                        @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
                         <div class="mb-2">
                             <a href="{{ route('addBonus') }}" class="btn btn-primary">Add Bonus</a>
                         </div>
@@ -62,7 +73,8 @@
                                             <td>Ksh.{{ number_format($bonus->amount, 2) }}</td>
                                             <td>
     <div class="d-flex align-items-center gap-2">
-        <a href="{{ route('editBonus', $bonus->id) }}" class="btn btn-primary btn-sm">Edit</a>
+    <a href="{{ route('editBonus', $bonus->id) }}" class="btn btn-primary btn-sm">Edit</a>
+
         <form action="{{ route('deleteBonus', $bonus->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this bonus?');">
             @csrf
             @method('DELETE')

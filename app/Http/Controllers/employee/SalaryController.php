@@ -36,7 +36,7 @@ class SalaryController extends Controller
         $deduction->employee_id = $request->employee_id;
         $deduction->amount = $request->amount;
         $deduction->month = $request->month;
-        $deduction->deduction_reason = $request->deduction_reason;
+        $deduction->deduction_reason = $request->deduction_reason ?? 'No reason provided';
         $deduction->save();
     
         return redirect()->route('manageDeductions')->with('success', 'Deduction added successfully!');
@@ -63,17 +63,12 @@ public function deleteDeduction($id)
         return view('admin.manageDeductions', compact('deductions'));
     }
 
-    public function editDeductions($id)
+    public function editDeduction($id)
     {
-       
         $deduction = Deduction::findOrFail($id);
-    
-        $employees = Employee::all();  
-    
-   
+        $employees = Employee::all();
         return view('admin.editDeductions', compact('deduction', 'employees'));
     }
-    
 
     public function updateDeduction(Request $request, $id)
 {
@@ -96,24 +91,25 @@ public function deleteDeduction($id)
     
     public function storeBonus(Request $request)
     {
-            $validated = $request->validate([
-            'employee_id' => 'required|exists:employees,employee_id',  
+        $validated = $request->validate([
+            'employee_id' => 'required|exists:employees,employee_id',
             'bonus_type' => 'required|string|max:255',
-            'date' => 'required|date',
+            'month' => 'nullable|date_format:Y-m', 
             'amount' => 'required|numeric|min:0',
             'description' => 'nullable|string|max:255',
         ]);
     
         Bonus::create([
-            'employee_id' => $validated['employee_id'],  
+            'employee_id' => $validated['employee_id'],
             'bonus_type' => $validated['bonus_type'],
-            'date' => $validated['date'],
+            'month' => $validated['month'] ?? date('Y-m'), 
             'amount' => $validated['amount'],
             'description' => $validated['description'] ?? null,
         ]);
     
-               return redirect()->route('manageBonus')->with('success', 'Bonus added successfully.');
+        return redirect()->route('manageBonus')->with('success', 'Bonus added successfully.');
     }
+    
     
     public function manageBonuses()
     {
@@ -122,18 +118,34 @@ public function deleteDeduction($id)
         return view('admin.manageBonus', compact('bonuses'));
     }
 
-public function edit($id)
+
+    public function editBonus($id)
+    {
+        $bonus = Bonus::findOrFail($id);
+        $employees = Employee::all();
+        return view('admin.addBonus', compact('bonus', 'employees'));
+    }
+    
+    public function updateBonus(Request $request, $id)
 {
    
     $bonus = Bonus::findOrFail($id);
 
-  
-    $employees = Employee::all();
+   
+    $bonus->employee_id = $request->employee_id;
+    $bonus->bonus_type = $request->bonus_type;
+    $bonus->amount = $request->amount;
+    $bonus->month = $request->month;
+    $bonus->description = $request->description;
+    
+    
+    $bonus->save();
 
-  
-    return view('admin.addBonus', compact('bonus', 'employees'));
+   
+    return redirect()->route('manageBonus')->with('success', 'Bonus updated successfully.');
 }
 
+    
 
 public function deleteBonus($id)
 {
@@ -144,35 +156,34 @@ public function deleteBonus($id)
 }
 
    
-    public function manageSalary()
-    {
-        $employees = Employee::with(['bonuses', 'deductions'])->get()->map(function($employee) {
-            $employee->bonus_amount = $employee->bonuses->sum('amount');
-            $employee->deductions_amount = $employee->deductions->sum('amount');
-    
-            $employee->nhif_amount = $employee->nhif;
-            $employee->nssf_amount = $employee->nssf;
-            $employee->other_deductions = 0; 
-            $employee->medical_allowance = 0; 
-            $employee->house_allowance = 0;
-    
-            $employee->gross_salary = $employee->basic_salary 
-                + $employee->bonus_amount 
-                + $employee->medical_allowance 
-                + $employee->house_allowance;
-    
-            
-            $employee->total_deductions = $employee->deductions_amount 
-                + $employee->nhif_amount 
-                + $employee->nssf_amount 
-                + $employee->other_deductions;
-    
-            return $employee;
-        });
-    
-        return view('admin.manageSalary', compact('employees'));
-    }
-    
+public function manageSalary()
+{
+    $employees = Employee::with(['bonuses', 'deductions'])->get()->map(function($employee) {
+        $employee->bonus_amount = (float) $employee->bonuses->sum('amount');
+        $employee->deductions_amount = (float) $employee->deductions->sum('amount');
+
+        $employee->nhif_amount = (float) $employee->nhif;
+        $employee->nssf_amount = (float) $employee->nssf;
+        $employee->other_deductions = 0; 
+        $employee->medical_allowance = 0; 
+        $employee->house_allowance = 0;
+
+        $employee->gross_salary = (float) $employee->basic_salary 
+            + $employee->bonus_amount 
+            + $employee->medical_allowance 
+            + $employee->house_allowance;
+
+        $employee->total_deductions = $employee->deductions_amount 
+            + $employee->nhif_amount 
+            + $employee->nssf_amount 
+            + $employee->other_deductions;
+
+        return $employee;
+    });
+
+    return view('admin.manageSalary', compact('employees'));
+}
+
 
     public function salaryList()
     {

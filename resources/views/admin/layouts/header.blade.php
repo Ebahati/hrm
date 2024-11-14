@@ -9,12 +9,7 @@
 
                 </a>
               </li>
-              <li class="nav-item nav-icon-hover-bg rounded-circle d-none d-lg-flex">
-                <a class="nav-link" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                <i class="fas fa-search fs-4"></i>
-
-                </a>
-              </li>
+             
             </ul>
 
             <ul class="navbar-nav quick-links d-none d-lg-flex align-items-center">
@@ -105,7 +100,7 @@
 
         @endif
 
-        <!-- Mark as Read -->
+        
         <form action="{{ route('markNotificationAsRead', $notification->id) }}" method="POST" style="display:inline;" id="mark-read-form-{{ $notification->id }}">
     @csrf
     @method('POST') 
@@ -115,7 +110,7 @@
     </a>
 </form>
 
-        <!-- Delete -->
+       
         <form action="{{ route('deleteNotification', $notification->id) }}" method="POST" style="display:inline;" id="delete-form-{{ $notification->id }}">
             @csrf
             @method('DELETE')

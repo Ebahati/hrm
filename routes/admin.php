@@ -12,25 +12,19 @@ use App\Http\Controllers\Employee\SalaryController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\LeaveController; 
 use App\Http\Controllers\AwardController;
+
 use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
-
-
 Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-//employee admin
-
-   
 Route::get('/new-employee', [EmployeeController::class, 'create'])->name('newEmployee');
 Route::post('/employees/store', [EmployeeController::class, 'store'])->name('employees.store');
 Route::get('/employee/{employee_id}/edit', [EmployeeController::class, 'edit'])->name('editEmployee');
-// In your routes/web.php
 Route::put('/employee/{employee_id}/update', [EmployeeController::class, 'update'])->name('employee.update');
-
 Route::get('/manage-employee', [EmployeeController::class, 'manage'])->name('manageEmployee');
 Route::delete('/employee/{employee_id}/delete', [EmployeeController::class, 'destroy'])->name('deleteEmployee');
 
-//employee
+
 Route::middleware(['auth', 'employee.access'])->group(function () {
     Route::get('/add-leave', [LeaveController::class, 'showLeaveApplicationForm'])->name('addLeave');
     Route::post('/add-leave', [LeaveController::class, 'storeLeaveApplication'])->name('storeLeave');
@@ -61,9 +55,10 @@ Route::get('/notifications/unread-count', [SalaryController::class, 'unreadCount
 Route::get('/bonuses', [SalaryController::class, 'createBonusForm'])->name('addBonus');
 Route::post('/bonus/store', [SalaryController::class, 'storeBonus'])->name('storeBonus');
 Route::get('/bonuses/manage', [SalaryController::class, 'manageBonuses'])->name('manageBonus');
-Route::get('/bonus/{id}/edit', [SalaryController::class, 'edit'])->name('editBonus');
-Route::put('/bonus/{id}', [SalaryController::class, 'store'])->name('updateBonus');
+Route::get('/bonus/{id}/edit', [SalaryController::class, 'editBonus'])->name('editBonus');
+Route::put('/bonus/{id}', [SalaryController::class, 'updateBonus'])->name('updateBonus');  // Corrected route
 Route::delete('/bonus/{id}', [SalaryController::class, 'deleteBonus'])->name('deleteBonus');
+
 
 //deductions
 Route::get('/deductions/create', [SalaryController::class, 'createDeductionForm'])->name('createDeduction');
