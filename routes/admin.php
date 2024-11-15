@@ -1,6 +1,7 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
-Use App\Http\Controllers\Employee\EmployeeController;
+use App\Http\Controllers\Employee\EmployeeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Notice\NoticeController;
 use App\Http\Controllers\Holiday\HolidayController;
@@ -10,133 +11,135 @@ use App\Http\Controllers\Employee\DesignationController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\Employee\SalaryController;
 use App\Http\Controllers\ExpenseController;
-use App\Http\Controllers\LeaveController; 
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\AwardController;
 
 use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
-Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-Route::get('/new-employee', [EmployeeController::class, 'create'])->name('newEmployee');
-Route::post('/employees/store', [EmployeeController::class, 'store'])->name('employees.store');
-Route::get('/employee/{employee_id}/edit', [EmployeeController::class, 'edit'])->name('editEmployee');
-Route::put('/employee/{employee_id}/update', [EmployeeController::class, 'update'])->name('employee.update');
-Route::get('/manage-employee', [EmployeeController::class, 'manage'])->name('manageEmployee');
-Route::delete('/employee/{employee_id}/delete', [EmployeeController::class, 'destroy'])->name('deleteEmployee');
 
 
 Route::middleware(['auth', 'employee.access'])->group(function () {
-    Route::get('/add-leave', [LeaveController::class, 'showLeaveApplicationForm'])->name('addLeave');
-    Route::post('/add-leave', [LeaveController::class, 'storeLeaveApplication'])->name('storeLeave');
-    Route::get('/leave-status', [LeaveController::class, 'showStatus'])->name('leaveStatus');
+
+    // Dashboard 
+    Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+
+    // Employee
+    Route::controller(EmployeeController::class)->group(function () {
+        Route::get('new-employee', 'create')->name('newEmployee');
+        Route::post('employees/store', 'store')->name('employees.store');
+        Route::get('employee/{employee_id}/edit', 'edit')->name('editEmployee');
+        Route::put('employee/{employee_id}/update', 'update')->name('employee.update');
+        Route::get('manage-employee', 'manage')->name('manageEmployee');
+        Route::delete('employee/{employee_id}/delete', 'destroy')->name('deleteEmployee');
+    });
+
+    // Salary 
+    Route::controller(SalaryController::class)->group(function () {
+        Route::get('manage-salary', 'manageSalary')->name('manageSalary');
+        Route::get('employee/details/{id}', 'fetchEmployeeDetails')->name('fetchEmployeeDetails');
+        Route::post('salary/update', 'update')->name('updateSalary');
+        Route::get('salary-list', 'salaryList')->name('salaryList');
+        Route::post('salarystore', 'storeSalary')->name('storeSalary');
+        Route::delete('salary/delete/{id}', 'destroy')->name('deleteSalary');
+        Route::get('employee/{employee_id}/salary', 'getEmployeeSalary');
+        Route::get('generate-payslip', 'showPayslipGenerationForm')->name('generate.payslip');
+        Route::post('generate-payslip', 'generatePayslip')->name('generatePayslip');
+        Route::get('salary-payments', 'showSalaryPayments')->name('salaryPayments');
+        Route::post('pay-salary', 'paySalary')->name('submitPaySalary');
+        Route::get('payment-list', 'showPaymentList')->name('paymentList');
+        Route::delete('notifications/{id}/delete', 'deleteNotification')->name('deleteNotification');
+        Route::post('notifications/mark-read/{notification}', 'markAsRead')->name('markNotificationAsRead');
+        Route::get('notifications/unread-count', 'unreadCount');
+        Route::get('bonuses', 'createBonusForm')->name('addBonus');
+        Route::post('bonus/store', 'storeBonus')->name('storeBonus');
+        Route::get('bonuses/manage', 'manageBonuses')->name('manageBonus');
+        Route::get('bonus/{id}/edit', 'editBonus')->name('editBonus');
+        Route::put('bonus/{id}', 'updateBonus')->name('updateBonus');
+        Route::delete('bonus/{id}', 'deleteBonus')->name('deleteBonus');
+        Route::get('deductions/create', 'createDeductionForm')->name('createDeduction');
+        Route::post('deductions/store', 'store')->name('storeDeduction');
+        Route::get('manage-deductions', 'manageDeductions')->name('manageDeductions');
+        Route::get('edit-deductions/{id}', 'editDeduction')->name('editDeductions');
+        Route::delete('deductions/{id}', 'deleteDeduction')->name('deleteDeduction');
+        Route::put('update-deduction/{id}', 'updateDeduction')->name('updateDeduction');
+    });
+
+    // Loan 
+    Route::controller(LoanController::class)->group(function () {
+        Route::post('loans', 'store')->name('loans.store');
+        Route::get('manage-loan', 'manageLoans')->name('manageLoan');
+        Route::get('add-loan', 'create')->name('addLoan');
+        Route::get('loan/{id}/edit', 'edit')->name('editLoan');
+        Route::post('loan/{id}/update', 'update')->name('loans.update');
+        Route::post('loans/{id}/clear', 'clearLoan')->name('loans.clear');
+    });
+
+    // Expense
+    Route::controller(ExpenseController::class)->group(function () {
+        Route::post('expense/store', 'store')->name('expense.store');
+        Route::get('add-Expense', 'create')->name('addExpense');
+        Route::get('expense-list', 'showExpenses')->name('expenseList');
+    });
+
+    // Leave 
+    Route::controller(LeaveController::class)->group(function () {
+        Route::get('manage-leave', 'manageLeaves')->name('manageLeave');
+        Route::get('leave-reports', 'showReports')->name('leaveReports');
+        Route::post('leave-reports/approve/{id}', 'approve')->name('approveLeave');
+        Route::post('leave-reports/reject/{id}', 'reject')->name('rejectLeave');
+        Route::get('add-leave', 'showLeaveApplicationForm')->name('addLeave');
+        Route::post('add-leave', 'storeLeaveApplication')->name('storeLeave');
+        Route::get('leave-status', 'showStatus')->name('leaveStatus');
+    });
+
+    // Award 
+    Route::controller(AwardController::class)->group(function () {
+        Route::get('add-Award', 'create')->name('addAward');
+        Route::get('manage-Award', 'showAward')->name('manageAward');
+        Route::post('add-Award', 'store')->name('storeAward');
+        Route::delete('delete-award/{id}', 'destroy')->name('deleteAward');
+    });
+
+    // Notice
+    Route::controller(NoticeController::class)->group(function () {
+        Route::get('add-notice', 'create')->name('addNotice');
+        Route::get('manage-notice', 'index')->name('manageNotice');
+        Route::post('notices', 'store')->name('storeNotice');
+        Route::get('notices/{id}', 'show')->name('viewNotice');
+        Route::delete('notices/{id}', 'destroy')->name('deleteNotice');
+    });
+
+    // File
+    Route::controller(FileController::class)->group(function () {
+        Route::get('add-files', 'index')->name('addFiles');
+        Route::get('manage-files', 'manageFiles')->name('manageFiles');
+        Route::post('files', 'store')->name('files.store');
+    });
+//department
+    Route::controller(DepartmentController::class)->group(function () {
+        Route::get('add-departments', 'index')->name('addDepartments');
+        Route::get('manage-departments', 'manageDepartments')->name('manageDepartments');
+        Route::post('departments', 'store')->name('departments.store');
+        Route::delete('departments/{id}', 'destroy')->name('departments.destroy');
+    });
     
+    // Designation 
+    Route::controller(DesignationController::class)->group(function () {
+        Route::get('manage-designations', 'manageDesignation')->name('manageDesignations');
+        Route::get('add-designation', 'create')->name('addDesignation');
+        Route::post('store-designation', 'store')->name('storeDesignation');
+        Route::delete('designation/{id}', 'destroy')->name('designations.destroy');
+    });
+
+    // Holiday 
+    Route::controller(HolidayController::class)->group(function () {
+        Route::get('manage-holiday', 'index')->name('manageHoliday');
+        Route::get('add-holiday', 'create')->name('addHoliday');
+        Route::post('store-holiday', 'store')->name('storeHoliday');
+        Route::get('edit-holiday/{id}', 'edit')->name('editHoliday');
+        Route::put('update-holiday/{id}', 'update')->name('updateHoliday');
+        Route::delete('Holiday/delete/{id}', 'destroy')->name('deleteHoliday');
+        Route::delete('holiday/{id}', 'destroy')->name('deleteHoliday');
+    });
 });
-// Salary routes
-Route::get('/manage-salary', [SalaryController::class, 'manageSalary'])->name('manageSalary');
-Route::get('/employee/details/{id}', [SalaryController::class, 'fetchEmployeeDetails'])->name('fetchEmployeeDetails');
-Route::post('/salary/update', [SalaryController::class, 'update'])->name('updateSalary');
-Route::get('/salary-list', [SalaryController::class, 'salaryList'])->name('salaryList');
-Route::post('/salary/store', [SalaryController::class, 'storeSalary'])->name('storeSalary');
-Route::delete('/salary/delete/{id}', [SalaryController::class, 'destroy'])->name('deleteSalary');
-Route::get('/employee/{employee_id}/salary', [SalaryController::class, 'getEmployeeSalary']);
-Route::get('/generate-payslip', [SalaryController::class, 'showPayslipGenerationForm'])->name('generate.payslip');
-Route::post('/generate-payslip', [SalaryController::class, 'generatePayslip'])->name('generatePayslip');
-Route::get('/salary-payments', [SalaryController::class, 'showSalaryPayments'])->name('salaryPayments');
-Route::post('/pay-salary', [SalaryController::class, 'paySalary'])->name('submitPaySalary');
-Route::get('/payment-list', [SalaryController::class, 'showPaymentList'])->name('paymentList');
-
-// notification 
-
-Route::delete('/notifications/{id}/delete', [SalaryController::class, 'deleteNotification'])->name('deleteNotification');
-Route::post('/notifications/mark-read/{notification}', [SalaryController::class, 'markAsRead'])->name('markNotificationAsRead');
-Route::get('/notifications/unread-count', [SalaryController::class, 'unreadCount']);
-
-// Bonus
-Route::get('/bonuses', [SalaryController::class, 'createBonusForm'])->name('addBonus');
-Route::post('/bonus/store', [SalaryController::class, 'storeBonus'])->name('storeBonus');
-Route::get('/bonuses/manage', [SalaryController::class, 'manageBonuses'])->name('manageBonus');
-Route::get('/bonus/{id}/edit', [SalaryController::class, 'editBonus'])->name('editBonus');
-Route::put('/bonus/{id}', [SalaryController::class, 'updateBonus'])->name('updateBonus');  // Corrected route
-Route::delete('/bonus/{id}', [SalaryController::class, 'deleteBonus'])->name('deleteBonus');
-
-
-//deductions
-Route::get('/deductions/create', [SalaryController::class, 'createDeductionForm'])->name('createDeduction');
-Route::post('/deductions/store', [SalaryController::class, 'store'])->name('storeDeduction');
-Route::get('/manage-deductions', [SalaryController::class, 'manageDeductions'])->name('manageDeductions');
-Route::get('/edit-deductions/{id}', [SalaryController::class, 'editDeductions'])->name('editDeductions');
-Route::delete('/deductions/{id}', [SalaryController::class, 'deleteDeduction'])->name('deleteDeduction');
-Route::put('/update-deduction/{id}', [SalaryController::class, 'updateDeduction'])->name('updateDeduction');
-
-// loan
-Route::post('/loans', [LoanController::class, 'store'])->name('loans.store');
-Route::get('/manage-loan', [LoanController::class, 'manageLoans'])->name('manageLoan'); 
-Route::get('/add-loan', [LoanController::class, 'create'])->name('addLoan');
-Route::get('/loan/{id}/edit', [LoanController::class, 'edit'])->name('editLoan');
-Route::post('/loan/{id}/update', [LoanController::class, 'update'])->name('loans.update');
-
-
-
-
-Route::post('/loans/{id}/clear', [LoanController::class, 'clearLoan'])->name('loans.clear');
-
-//expense
-Route::post('/expense/store', [ExpenseController::class, 'store'])->name('expense.store');
-Route::get('/add-Expense', [ExpenseController::class, 'create'])->name('addExpense');
-Route::get('/expense-list', [ExpenseController::class, 'showExpenses'])->name('expenseList');
-
-//leave
-Route::get('/manage-leave', [LeaveController::class, 'manageLeaves'])->name('manageLeave');
-Route::get('/leave-reports', [LeaveController::class, 'showReports'])->name('leaveReports');
-Route::post('/leave-reports/approve/{id}', [LeaveController::class, 'approve'])->name('approveLeave');
-Route::post('/leave-reports/reject/{id}', [LeaveController::class, 'reject'])->name('rejectLeave');
-
-//award
-Route::get('/add-Award', [AwardController::class, 'create'])->name('addAward');
-Route::get('/manage-Award', [AwardController::class, 'showAward'])->name('manageAward');
-Route::post('/add-Award', [AwardController::class, 'store'])->name('storeAward');
-Route::delete('/delete-award/{id}', [AwardController::class, 'destroy'])->name('deleteAward');
-
-//  notice
-Route::get('/add-notice', function () {
-    return view('admin.addNotice');
-})->name('addNotice');
-Route::get('/manage-notice', [NoticeController::class, 'index'])->name('manageNotice');
-Route::post('/notices', [NoticeController::class, 'store'])->name('storeNotice');
-
-Route::get('/notices/{id}', [NoticeController::class, 'show'])->name('viewNotice');
-Route::delete('/notices/{id}', [NoticeController::class, 'destroy'])->name('deleteNotice');
-
-//  files
-Route::get('/manage-files', [FileController::class, 'manageFiles'])->name('manageFiles');
-Route::post('/files', [FileController::class, 'store'])->name('files.store');
-Route::get('/add-files', function () {
-    return view('admin.addFiles');
-})->name('addFiles');
-
-//  departments
-Route::get('/manage-departments', [DepartmentController::class, 'manageDepartments'])->name('manageDepartments');
-Route::post('/departments', [DepartmentController::class, 'store'])->name('departments.store');
-Route::get('/add-departments', function () {
-    return view('admin.addDepartments'); 
-})->name('addDepartments');
-Route::delete('/departments/{departments}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
-
-// designations
-Route::get('/manage-designations', [DesignationController::class, 'manageDesignation'])->name('manageDesignations');
-Route::get('/add-designation', function () {
-    return view('admin.addDesignation'); 
-})->name('addDesignation');
-Route::get('/add-designation', [DesignationController::class, 'create'])->name('addDesignation');
-Route::post('/store-designation', [DesignationController::class, 'store'])->name('storeDesignation');
-Route::delete('/designation/{id}', [DesignationController::class, 'destroy'])->name('designations.destroy');
-
-// holiday
-Route::get('/manage-holiday', [HolidayController::class, 'index'])->name('manageHoliday');
-Route::get('/add-holiday', [HolidayController::class, 'create'])->name('addHoliday');
-Route::post('/store-holiday', [HolidayController::class, 'store'])->name('storeHoliday');
-Route::delete('/Holiday/delete/{id}', [HolidayController::class, 'destroy'])->name('deleteHoliday');
-Route::get('/edit-holiday/{id}', [HolidayController::class, 'edit'])->name('editHoliday');
-Route::put('/update-holiday/{id}', [HolidayController::class, 'update'])->name('updateHoliday');
-Route::put('/update-holiday/{id}', [HolidayController::class, 'update'])->name('updateHoliday');
-Route::delete('/holiday/{id}', [HolidayController::class, 'destroy'])->name('deleteHoliday');

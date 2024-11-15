@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
+
+    
+    public function index()
+   {
+    return view('admin.addFiles');
+   }
+
     public function store(Request $request)
     {
         $request->validate([

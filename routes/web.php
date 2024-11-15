@@ -11,15 +11,8 @@ Route::get('/', function () {
     return view('auth.login'); 
 });
 
-
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-
-
-
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-
-
-
 Route::get('/admin/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard')->middleware('auth');
 
 

@@ -8,10 +8,13 @@ use App\Models\Department;
 
 
 class DepartmentController extends Controller
-
-
 {
-    
+  
+public function index()
+{
+    return view('admin.addDepartments');
+}
+  
    
 public function manageDepartments() 
 {

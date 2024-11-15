@@ -251,6 +251,7 @@
   </div>
   <div class="dark-transparent sidebartoggler"></div>
  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <script src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/js/vendor.min.js"></script>
 

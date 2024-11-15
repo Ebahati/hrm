@@ -6,7 +6,10 @@ use App\Models\Notice;
 use App\Models\Holiday; 
 class NoticeController extends Controller
 {
-    
+    public function create()
+{
+    return view('admin.addNotice');
+}
     public function index()
     {
         $notices = Notice::all(); 
