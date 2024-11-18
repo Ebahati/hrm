@@ -27,6 +27,6 @@ Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('
 
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::get('/admin/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard')->middleware('auth');
-
+Route::post('/register', [RegisterController::class, 'register']);
 
    
