@@ -4,8 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
-use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use App\Models\Notification;
 
 class ViewServiceProvider extends ServiceProvider
 {
@@ -30,5 +31,27 @@ class ViewServiceProvider extends ServiceProvider
 
             $view->with(compact('notifications', 'unreadNotificationsCount'));
         });
-    }
+   
+    View::composer('*', function ($view) {
+        $user = Auth::user();
+        $allowedRoutes = [];
+
+        if ($user) {
+            $employeeId = $user->employee_id;
+
+            if (Str::startsWith($employeeId, 'EMP')) {
+                $role = 'Employee';
+            } elseif (Str::startsWith($employeeId, 'SBA')) {
+                $role = 'SubAdmin';
+            } else {
+                $role = 'SuperAdmin';
+            }
+
+            $allowedRoutes = config("roles.$role", []);
+        }
+
+        $view->with('allowedRoutes', $allowedRoutes);
+    });
+}
+
 }

@@ -37,8 +37,7 @@ class EmployeeAccess
         if (!$allowedRoutes) {
             return redirect()->route('login')->with('error', 'Role configuration not found.');
         }
-
-      
+     
         if (!in_array($request->route()->getName(), $allowedRoutes)) {
             return redirect()->route('dashboard')->with('error', 'Access Denied');
         }
