@@ -29,7 +29,6 @@
             </div>
         </div>
 
-       
         <div class="row justify-content-center">
             <div class="col-lg-12">
                 <div class="card">
@@ -37,43 +36,79 @@
                         <h4 class="card-title mb-0">Enter Folder Details</h4>
                     </div>
                     <div class="card-body">
-                    <form action="{{ route('files.store') }}" method="POST" enctype="multipart/form-data">
-    @csrf
-    <div class="mb-3">
-        <input type="text" name="folder_name" class="form-control" placeholder="Folder Name" required />
-    </div>
-    <div class="mb-3">
-        <textarea name="details" class="form-control" rows="3" placeholder="Folder Details"></textarea>
-    </div>
+                    <div id="responseMessage" class="mt-3"></div>
+                        <form id="fileUploadForm" enctype="multipart/form-data">
+                            @csrf
+                            <div class="mb-3">
+                                <input type="text" name="folder_name" class="form-control" placeholder="Folder Name" required />
+                            </div>
+                            <div class="mb-3">
+                                <textarea name="details" class="form-control" rows="3" placeholder="Folder Details"></textarea>
+                            </div>
 
-    <div class="email-repeater mb-3">
-        <div data-repeater-list="repeater-group">
-            <div data-repeater-item class="row mb-3">
-                <div class="col-md-10">
-                    <input type="file" name="files[]" class="form-control" required />
-                </div>
-                <div class="col-md-2 mt-3 mt-md-0">
-                    <button data-repeater-delete class="btn btn-danger" type="button">
-                        <i class="fas fa-times fs-5 d-flex"></i>
-                    </button>
-                </div>
+                            <div class="email-repeater mb-3">
+    <div data-repeater-list="repeater-group">
+        <div data-repeater-item class="row mb-3">
+            <div class="col-md-10">
+                <input type="file" name="files[]" class="form-control" required />
+            </div>
+            <div class="col-md-2 mt-3 mt-md-0">
+                <button data-repeater-delete class="btn btn-danger" type="button">
+                    <i class="fas fa-times fs-5 d-flex"></i>
+                </button>
             </div>
         </div>
-       
     </div>
-
-    <div class="text-end">
-        <button type="submit" class="btn btn-primary">Upload  <i class="fas fa-plus ms-1 fs-5"></i></button>
-    </div>
-</form>
-
+</div>
+<div class="text-end">
+    <button type="submit" class="btn btn-primary">Upload  <i class="fas fa-plus ms-1 fs-5"></i></button>
+        </div>
+                        </form>
+                        
                     </div>
                 </div>
             </div>
         </div>
-
-       
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+ $(document).ready(function () {
+   
+    $(document).on('click', '[data-repeater-delete]', function() {
+       
+        $(this).closest('.row').find('input[type="file"]').val('');
+    });
+});
+
+$('#fileUploadForm').submit(function (event) {
+    event.preventDefault();  
+    
+    var formData = new FormData(this); 
+    console.log(formData); 
+
+    $.ajax({
+        url: "{{ route('files.store') }}", 
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response.status) {
+                $('#responseMessage').html('<div class="alert alert-success">' + response.message + '</div>');
+               
+                $('#fileUploadForm')[0].reset();
+            } else {
+                $('#responseMessage').html('<div class="alert alert-danger">' + response.message + '</div>');
+            }
+        },
+        error: function(xhr, status, error) {
+           
+            $('#responseMessage').html('<div class="alert alert-danger">Error: ' + error + '</div>');
+        }
+    });
+});
+
+</script>
 @endsection
