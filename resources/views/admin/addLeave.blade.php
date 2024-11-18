@@ -33,33 +33,25 @@
                         <h4 class="card-title">Leave Application Form</h4>
                     </div>
                     @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-           
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
-                        @if (session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
+                    <div id="responseMessage"></div> 
 
-
-                    <form action="{{ route('storeLeave') }}" method="POST" class="form-horizontal r-separator">
+                    <form id="leaveApplicationForm" method="POST" class="form-horizontal r-separator">
                         @csrf 
                         <div class="card-body">
                             <div class="form-group mb-3">
                                 <div class="row align-items-center">
                                     <label for="employeeId" class="col-3 text-end col-form-label">Employee ID</label>
                                     <div class="col-9">
-                                    <input type="text" name="employee_id" class="form-control" value="{{ $employee->employee_id }}" readonly />
+                                        <input type="text" name="employee_id" class="form-control" value="{{ $employee->employee_id }}" readonly />
                                     </div>
                                 </div>
                             </div>
@@ -68,8 +60,7 @@
                                 <div class="row align-items-center">
                                     <label for="employeeName" class="col-3 text-end col-form-label">Employee Name</label>
                                     <div class="col-9">
-                                    <input type="text" name="employee_name" class="form-control" value="{{ $employee->name }}" readonly />
-
+                                        <input type="text" name="employee_name" class="form-control" value="{{ $employee->name }}" readonly />
                                     </div>
                                 </div>
                             </div>
@@ -131,5 +122,35 @@
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+   
+    $('#leaveApplicationForm').submit(function(event) {
+        event.preventDefault(); 
 
+        var formData = $(this).serialize(); 
+
+        $.ajax({
+            url: "{{ route('storeLeave') }}", 
+            type: "POST",
+            data: formData,
+            success: function(response) {
+                if (response.status) {
+                    $('#responseMessage').html('<div class="alert alert-success">' + response.message + '</div>');
+                    $('#responseMessage').show(); 
+                    $('#leaveApplicationForm')[0].reset(); 
+                } else {
+                    $('#responseMessage').html('<div class="alert alert-danger">' + response.message + '</div>');
+                    $('#responseMessage').show(); 
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#responseMessage').html('<div class="alert alert-danger">Error: ' + error + '</div>');
+                $('#responseMessage').show(); 
+            }
+        });
+    });
+});
+</script>
 @endsection

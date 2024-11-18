@@ -16,7 +16,7 @@ use App\Http\Controllers\AwardController;
 
 use Illuminate\Support\Facades\Auth;
 
-Auth::routes();
+
 
 
 Route::middleware(['auth', 'employee.access'])->group(function () {

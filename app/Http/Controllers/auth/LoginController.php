@@ -1,48 +1,59 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
 
 class LoginController extends Controller
 {
-   
-
-   
-    use AuthenticatesUsers;
-
-    protected function authenticated(Request $request, $user)
+    
+    public function showLoginForm()
     {
-        \Log::info('User authenticated: ' . $user->employee_id); 
-        return redirect()->route('dashboard'); 
+        return view('auth.login');
     }
 
-
-    public function __construct()
+  
+    public function login(Request $request)
     {
-        $this->middleware('auth')->only('logout');
+        
+        $validated = $request->validate([
+            'employee_id' => 'required|string', 
+            'password' => 'required|string',
+        ]);
+    
+       
+        $credentials = [
+            'employee_id' => $request->employee_id,
+            'password' => $request->password,
+        ];
+    
+        if (Auth::attempt($credentials)) {
+          
+            return redirect()->intended('/admin/dashboard');
+        }
+    
+      
+        return back()->withErrors(['employee_id' => 'Invalid credentials.'])->withInput();
     }
+    
 
-    public function username()
-    {
-        return 'employee_id';
-    }
-
+  
     protected function validateLogin(Request $request)
     {
         $request->validate([
-            $this->username() => 'required|string|exists:users,employee_id',
-            'password' => 'required|string',
+            'employee_id' => ['required', 'string'],
+            'password' => ['required', 'string'],
         ]);
     }
-   
-public function showLoginForm()
-{
-    return view('auth.login'); 
-}
 
-
-
+    
+    public function logout()
+    {
+        Auth::logout();
+        return redirect('/login');
+    }
 }

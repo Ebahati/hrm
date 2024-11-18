@@ -1,10 +1,7 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Carbon\Carbon;
 use App\Models\Employee; 
-
 use App\Models\Leave; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,31 +16,32 @@ class LeaveController extends Controller
     }
 
     public function storeLeaveApplication(Request $request)
-{
+    {
+        $request->validate([
+            'employee_id' => 'required|exists:employees,employee_id',
+            'leave_category' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date', 
+            'reason' => 'required|string',
+        ]);
     
-    $request->validate([
-     
-        'employee_id' => 'required|exists:employees,employee_id',
-        'leave_category' => 'required|string',
-        'start_date' => 'required|date',
-        'end_date' => 'required|date|after_or_equal:start_date', 
-        'reason' => 'required|string',
-    ]);
-
- 
-    Leave::create([
-        'employee_id' => $request->input('employee_id'),
-        'leave_category' => $request->input('leave_category'),
-        'start_date' => $request->input('start_date'),
-        'end_date' => $request->input('end_date'),
-        'reason' => $request->input('reason'),
-    ]);
-
+        try {
+            Leave::create([
+                'employee_id' => $request->input('employee_id'),
+                'leave_category' => $request->input('leave_category'),
+                'start_date' => $request->input('start_date'),
+                'end_date' => $request->input('end_date'),
+                'reason' => $request->input('reason'),
+            ]);
     
-   return redirect()->back()->with('success', 'Leave application submitted successfully!');
-
-}
-
+          
+            return success_api_processor(null, 'Leave application submitted successfully!', 200);
+        } catch (\Exception $e) {
+           
+            return error_api_processor('Failed to submit leave application.', 400);
+        }
+    }
+    
 public function approve($id)
 {
     $leave = Leave::findOrFail($id);

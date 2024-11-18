@@ -184,8 +184,8 @@
                         <label>Password</label>
                         <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
                     </div>
-                    <input onclick="set_fullmode();" type="submit" value="&nbsp;&nbsp;Login"
-                           class="btn btn-primary btn-rounded btn-block"/>
+                    <input type="submit" value="&nbsp;&nbsp;Login" class="btn btn-primary btn-rounded btn-block"/>
+
                     <div class="pt-3 text-danger" id="log_msg"></div>
                     <br>
                     <a href="{{ route('password.request') }}" class="text-muted">Forgot Password?</a><br>
