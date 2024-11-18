@@ -5,18 +5,6 @@
 @section('content')
 <div class="body-wrapper">
     <div class="container-fluid">
-    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
-
         <div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
             <div class="card-body px-4 py-3">
                 <div class="row align-items-center">
@@ -43,6 +31,18 @@
         <div class="datatables">
             <div class="card">
                 <div class="card-body">
+                    @if(session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
                     <div class="mb-2">
                         <a href="{{ route('createDeduction') }}" class="btn btn-primary">Add Deduction</a>
                     </div>
@@ -60,31 +60,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-    @foreach($deductions as $deduction)
-        <tr>
-            <td>{{ $deduction->employee ? $deduction->employee->name : 'No employee' }}</td> 
-          <td>{{ $deduction->employee && $deduction->employee->designation ? $deduction->employee->designation->name : 'No designation' }}</td>
-
-            <td>{{ $deduction->deduction_reason ?? 'No reason provided' }}</td>
-            <td>{{ $deduction->month }}</td>
-            <td>Ksh.{{ number_format($deduction->amount, 2) }}</td>
-            <td>
-                <div class="d-flex align-items-center gap-3">
-                <a href="{{ route('editDeductions', ['id' => $deduction->id]) }}"class="btn btn-primary"> Edit Deduction</a>
-                  
-                    <form action="{{ route('deleteDeduction', $deduction->id) }}" method="POST" style="display:inline;">
-    @csrf
-    @method('DELETE')
-    <button type="submit" class="btn bg-danger-subtle text-danger">Delete</button>
-</form>
-
-                </div>
-            </td>
-        </tr>
-    @endforeach
-</tbody>
-
-
+                                @foreach($deductions as $deduction)
+                                <tr id="deduction-row-{{ $deduction->id }}">
+                                    <td>{{ $deduction->employee ? $deduction->employee->name : 'No employee' }}</td>
+                                    <td>{{ $deduction->employee && $deduction->employee->designation ? $deduction->employee->designation->name : 'No designation' }}</td>
+                                    <td>{{ $deduction->deduction_reason ?? 'No reason provided' }}</td>
+                                    <td>{{ $deduction->month }}</td>
+                                    <td>Ksh.{{ number_format($deduction->amount, 2) }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <a href="{{ route('editDeductions', ['id' => $deduction->id]) }}" class="btn btn-primary">Edit Deduction</a>
+                                            <button class="btn bg-danger-subtle text-danger deleteDeductionButton" 
+                                                    data-id="{{ $deduction->id }}" 
+                                                    data-url="{{ route('deleteDeduction', $deduction->id) }}">
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -92,4 +87,35 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $(document).on('click', '.deleteDeductionButton', function(e) {
+            e.preventDefault();
+
+            var deductionId = $(this).data('id');
+            var url = $(this).data('url');
+
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.status === true) {
+                        $('#deduction-row-' + deductionId).remove();
+                        toastr.success(response.message);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error('An error occurred while deleting the deduction.');
+                }
+            });
+        });
+    });
+</script>
+
 @endsection

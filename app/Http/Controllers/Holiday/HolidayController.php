@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Holiday;
 use App\Http\Controllers\Controller;
 use App\Models\Holiday;
 use Illuminate\Http\Request;
-
+use Illuminate\Http\JsonResponse;
 class HolidayController extends Controller
 {
     
@@ -59,12 +59,17 @@ class HolidayController extends Controller
         return redirect()->route('manageHoliday')->with('success', 'Holiday updated successfully.');
     }
 
-    public function destroy($id)
-{
-    $holiday = Holiday::findOrFail($id);  
-    $holiday->delete(); 
+   public function destroy($id)
+    {
+        try {
+            $holiday = Holiday::findOrFail($id);
+            $holiday->delete();
 
-    return redirect()->route('manageHoliday')->with('success', 'Holiday deleted successfully!');
-}
-
+            return success_api_processor(null, 'Holiday deleted successfully!', 200);
+        } catch (\Exception $e) {
+            return error_api_processor('Failed to delete holiday.', 400);
+        }
+    }
+    
+    
 }

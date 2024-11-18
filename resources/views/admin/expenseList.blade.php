@@ -78,9 +78,7 @@
         @foreach ($expenses as $expense)
         <tr>
             <td>{{ $expense->id }}</td>
-          
             <td>{{ $expense->employee_id }}</td>
-           
             <td>{{ $expense->expense_date}}</td> 
             <td>{{ $expense->category }}</td>
             <td>{{ number_format($expense->amount, 2) }}</td>

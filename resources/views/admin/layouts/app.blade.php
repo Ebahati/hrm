@@ -3,10 +3,17 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr" data-bs-theme="light" data-color-theme="Blue_Theme" data-layout="vertical">
 <head>
- 
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+ 
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
 
 
   <link rel="shortcut icon" type="image/png" href="{{ asset('assets/logo.png') }}" />
@@ -250,8 +257,8 @@
     </div>
   </div>
   <div class="dark-transparent sidebartoggler"></div>
- 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 
   <script src="https://bootstrapdemos.adminmart.com/modernize/dist/assets/js/vendor.min.js"></script>
 

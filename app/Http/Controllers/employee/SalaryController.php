@@ -42,19 +42,18 @@ class SalaryController extends Controller
         return redirect()->route('manageDeductions')->with('success', 'Deduction added successfully!');
     }
     
-public function deleteDeduction($id)
-{
+    public function deleteDeduction($id)
+    {
+        try {
+            $deduction = Deduction::findOrFail($id);
+            $deduction->delete();
     
-    $deduction = Deduction::findOrFail($id);
-
-    if ($deduction) {
-        $deduction->delete();
-
-        return redirect()->route('manageDeductions')->with('success', 'Deduction deleted successfully.');
+            return success_api_processor(null, 'Deduction deleted successfully!', 200);
+        } catch (\Exception $e) {
+            return error_api_processor('Failed to delete deduction. Please try again.', 400);
+        }
     }
-
-    return redirect()->route('manageDeductions')->with('error', 'Deduction not found.');
-}
+    
 
     public function manageDeductions()
     {
@@ -149,12 +148,15 @@ public function deleteDeduction($id)
 
 public function deleteBonus($id)
 {
-    $bonus = Bonus::findOrFail($id);  
-    $bonus->delete();  
-
-    return redirect()->route('manageBonus')->with('success', 'Bonus deleted successfully!');  
+    try {
+       
+        $bonus = Bonus::findOrFail($id);
+        $bonus->delete();
+        return success_api_processor(null, 'Bonus deleted successfully!', 200);
+    } catch (\Exception $e) {
+               return error_api_processor('Failed to delete bonus. Please try again.', 400);
+    }
 }
-
    
 public function manageSalary()
 {
@@ -310,21 +312,16 @@ public function manageSalary()
     }
 
     public function destroy($id)
-    {
-        
-        $salary = Salary::find($id);
-
-      
-        if (!$salary) {
-            return redirect()->route('salaryList')->with('error', 'Salary entry not found.');
-        }
-
-      
+{
+    try {
+        $salary = Salary::findOrFail($id);
         $salary->delete();
 
-      
-        return redirect()->route('salaryList')->with('success', 'Salary entry deleted successfully.');
+        return success_api_processor(null, 'Salary entry deleted successfully!', 200);
+    } catch (\Exception $e) {
+        return error_api_processor('Failed to delete salary entry.', 400);
     }
+}
 
 
     public function showPayslipGenerationForm()

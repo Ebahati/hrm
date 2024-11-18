@@ -1,15 +1,13 @@
 <?php
 namespace App\Http\Controllers\Employee;
-
+use App\CentralLogics\helpers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use App\Models\Department;
-
-
+use Illuminate\Http\JsonResponse;
 class DepartmentController extends Controller
 {
-  
+ 
 public function index()
 {
     return view('admin.addDepartments');
@@ -24,55 +22,50 @@ public function manageDepartments()
 
 public function store(Request $request)
 {
-   
-    $validated = $request->validate([
-        'department' => 'required|string|max:255',
+       $validated = $request->validate([
+        'department' => 'required|string|max:255|unique:departments,name',  
         'description' => 'nullable|string|max:255',
     ]);
-    
+
     try {
-        
-        Department::create([
+            Department::create([
             'name' => $validated['department'],
             'description' => $validated['description'],
         ]);
 
-    
         return redirect()->route('manageDepartments')->with('success', 'Department added successfully!');
+        
     } catch (\Illuminate\Database\QueryException $e) {
-      
-        if ($e->getCode() === '23000') { 
-            return redirect()->back()->withErrors(['department' => 'The department name already exists.'])->withInput();
+            if ($e->getCode() === '23000') {
+            return error_api_processor(
+                'The department name already exists.',
+                422,
+                ['errors' => ['department' => 'The department name already exists.']]
+            );
         }
 
-      
-        return redirect()->back()->withErrors(['error' => 'An error occurred while adding the department.'])->withInput();
+        return error_api_processor(
+            'An error occurred while adding the department.',
+            500,
+            ['errors' => ['error' => 'An error occurred while adding the department.']]
+        );
     }
 }
 
-
-   
-
 public function destroy($id)
 {
+    try {
+        $department = Department::findOrFail($id);
+        $department->delete();
 
-    $department = Department::findOrFail($id);
-
-   
-    \App\Models\Notification::whereIn('employee_id', function($query) use ($department) {
-        $query->select('id')
-              ->from('employees')
-              ->where('department_id', $department->id);
-    })->update(['employee_id' => null]);
-
-   
-    $department->delete();
-
-   
-    return redirect()->route('manageDepartments')->with('success', 'Department deleted successfully.');
+        return success_api_processor(null, 'Department deleted successfully!', 200);
+    } catch (\Exception $e) {
+        return error_api_processor('Failed to delete department.', 400);
+    }
+}
 }
 
-}
+
 
 
 

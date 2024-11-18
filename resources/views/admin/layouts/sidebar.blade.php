@@ -1,17 +1,3 @@
-@php
-    $user = Auth::user();
-    $isAuthenticated = isset($user);
-
-    // Checks for specific roles based on employee_id patterns
-    $isEmployee = $isAuthenticated && Str::startsWith($user->employee_id, 'EMP');
-    $isSubAdmin = $isAuthenticated && Str::startsWith($user->employee_id, 'SBA');
-    $isSuperAdmin = $isAuthenticated && !$isEmployee && !$isSubAdmin;
-
-    // Admin privileges include both SuperAdmin and SubAdmin
-    $isAdmin = $isSuperAdmin || $isSubAdmin;
-@endphp
-
-
 
 
 <aside class="left-sidebar with-vertical">
@@ -108,7 +94,6 @@
                   </a>
                 </li>
              
-                @if ($isSuperAdmin)
               <li class="sidebar-item">
                   <a href="{{ route('manageLeave') }}" class="sidebar-link">
                     <div class="round-16 d-flex align-items-center justify-content-center">
@@ -118,8 +103,7 @@
                     <span class="hide-menu">Manage leave application</span>
                   </a>
                 </li>
-                @endif
-                @if ($isAdmin)
+             
                 <li class="sidebar-item">
                 <a href="{{ route('leaveReports') }}"  class="sidebar-link">
                     <div class="round-16 d-flex align-items-center justify-content-center">
@@ -138,8 +122,7 @@
             </li>
            
               
-                @endif
-                @if ($isSuperAdmin)
+              
             <li class="sidebar-item">
               <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
                 <span class="d-flex">
@@ -251,8 +234,7 @@
                 </li>
               </ul>
             </li>
-            @endif
-            @if ($isAdmin)
+          
                 <li class="sidebar-item">
                  <a href="{{ route('generate.payslip') }}" class="sidebar-link">
                     <div class="round-16 d-flex align-items-center justify-content-center">
@@ -270,11 +252,7 @@
                     <span class="hide-menu">Holidays and Events</span>
                   </a>
                 </li>
-               
             
-                
-            @endif
-            @if ($isSuperAdmin)
             <li class="sidebar-item">
               <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
                 <span class="d-flex">
@@ -366,10 +344,7 @@
                 
               </ul>
             </li>
-          
-           
-                @endif
-                @if ($isSuperAdmin)
+         
                 <li class="sidebar-item">
               <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
                 <span class="d-flex">
@@ -403,8 +378,7 @@
               </ul>
             </li>
            
-            
-            @endif
+        
         </nav>
       
        <div class="fixed-profile p-3 mx-4 mb-2 bg-secondary-subtle rounded mt-3">

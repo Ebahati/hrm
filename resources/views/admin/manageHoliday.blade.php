@@ -57,10 +57,9 @@
                     </div>
                 @endif
 
-                    <div class="mb-2">
-                    <a href="{{ route('addHoliday') }}" class="btn btn-primary">Add</a>
-
-                    </div>
+                <div class="mb-2">
+    <a href="{{ route('addHoliday') }}" class="btn btn-primary">Add</a>
+</div>
                     
                     <div class="table-responsive">
                         
@@ -77,21 +76,20 @@
         </thead>
         <tbody>
             @foreach($holidays as $holiday)
-            <tr>
+            <tr id="holiday-row-{{ $holiday->id }}">
                 <td>{{ $holiday->id }}</td>
                 <td>{{ $holiday->name }}</td>
                 <td>{{ $holiday->description }}</td>
-               
                 <td>{{ $holiday->date }}</td>
                 <td>{{ $holiday->status }}</td>
                 <td>
                     <div class="d-flex align-items-center gap-3">
                         <a href="{{ route('editHoliday', $holiday->id) }}" class="btn btn-warning">Edit</a>
-                        <form action="{{ route('deleteHoliday', $holiday->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this holiday?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn bg-danger-subtle text-danger">Delete</button>
-                        </form>
+                        <button class="btn bg-danger-subtle text-danger deleteHolidayButton" 
+                                data-id="{{ $holiday->id }}" 
+                                data-url="{{ route('deleteHoliday', $holiday->id) }}">
+                            Delete
+                        </button>
                     </div>
                 </td>
             </tr>
@@ -103,4 +101,38 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+     
+        $(document).on('click', '.deleteHolidayButton', function(e) {
+            e.preventDefault();
+
+            var holidayId = $(this).data('id');
+            var url = $(this).data('url');
+
+           
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.status === true) {
+                       
+                        $('#holiday-row-' + holidayId).remove();
+                        toastr.success(response.message); 
+                    } else {
+                        toastr.error(response.message); 
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error('An error occurred while deleting the holiday.');
+                }
+            });
+        });
+    });
+</script>
+
+
 @endsection

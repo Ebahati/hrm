@@ -131,15 +131,20 @@ class EmployeeController extends Controller
    
 
    
-    public function destroy($employee_id)
-    {
-        $employee = Employee::where('employee_id', $employee_id)->first();
-        if ($employee) {
-            $employee->delete();
-        }
-        return redirect()->route('manageEmployee')->with('success', 'Employee deleted successfully');
+public function destroy($employee_id)
+{
+    try {
+        $employee = Employee::where('employee_id', $employee_id)->firstOrFail();
+
+        $employee->delete();
+
+        return success_api_processor(null, 'Employee deleted successfully!', 200);
+    } catch (\Exception $e) {
+       
+        return error_api_processor('Failed to delete employee.', 400);
     }
-    
+}
+
     
 
 }

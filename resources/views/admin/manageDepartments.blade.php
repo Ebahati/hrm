@@ -30,10 +30,10 @@
         </div>
         
         <div class="datatables">
-            <!-- Start Department Management -->
+           
             <div class="card">
                 <div class="card-body">
-                       <!-- Success Alert -->
+                    
                 @if(session('success'))
                     <div class="alert alert-success">
                         {{ session('success') }}
@@ -41,22 +41,6 @@
                 @endif
 
                
-                @if(session('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
-               
-                @if($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
 
                     <div class="mb-2">
                         <a href="{{ route('addDepartments') }}" class="btn btn-primary">Add Department</a>
@@ -76,22 +60,22 @@
                             </thead>
                             <tbody>
                                 @foreach($departments as $department)
-                                <tr>
-                                    <td>{{ $department->id }}</td>
-                                    <td>{{ $department->name }}</td>
-                                    <td>{{ $department->description }}</td>
-                                    <td>{{ $department->created_at->format('d/m/Y') }}</td>
-                                    <td><span class="badge bg-success">Active</span></td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <form action="{{ route('departments.destroy', $department->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this department?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn bg-danger-subtle text-danger">Delete</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <tr id="department-row-{{ $department->id }}">
+                                        <td>{{ $department->id }}</td>
+                                        <td>{{ $department->name }}</td>
+                                        <td>{{ $department->description }}</td>
+                                        <td>{{ $department->created_at->format('d/m/Y') }}</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <button class="btn bg-danger-subtle text-danger deleteDepartmentButton" 
+                                                        data-id="{{ $department->id }}" 
+                                                        data-url="{{ route('departments.destroy', $department->id) }}">
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -102,5 +86,36 @@
         </div>
     </div>
 </div>
+<script>
+   $(document).ready(function() {
+    $(document).on('click', '.deleteDepartmentButton', function(e) {
+        e.preventDefault();
+
+        var departmentId = $(this).data('id');
+        var url = $(this).data('url');
+
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.status === true) {
+                   
+                    $('#department-row-' + departmentId).remove();
+                    toastr.success(response.message); 
+                } else {
+                    toastr.error(response.message); 
+                }
+            },
+            error: function(xhr) {
+                toastr.error('An error occurred while deleting the department.');
+            }
+        });
+    });
+});
+
+</script>
 
 @endsection

@@ -52,8 +52,8 @@
             <h4 class="card-title">Add Expense</h4>
           </div>
 
-          <form class="form-horizontal r-separator" method="POST" action="{{ route('expense.store') }}" enctype="multipart/form-data">
-            @csrf
+          <form id="addExpenseForm" action="{{ route('expense.store') }}" method="POST" enctype="multipart/form-data">
+    @csrf
             <div class="card-body">
               <div class="form-group mb-0">
                 <div class="row align-items-center">
@@ -155,5 +155,8 @@
         const employee = employees.find(emp => emp.employee_id === employeeId);
         document.getElementById('employee_name').value = employee ? employee.name : '';
     }
+
+   
+
 </script>
 @endsection

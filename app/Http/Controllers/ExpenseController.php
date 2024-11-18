@@ -17,32 +17,36 @@ class ExpenseController extends Controller
 
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'expense_date' => 'required|date',
+            'category' => 'required|string|max:255',
+            'employee_id' => 'required|exists:employees,employee_id',
+            'amount' => 'required|numeric',
+            'remarks' => 'nullable|string',
+            'receipt' => 'nullable|file|mimes:jpeg,png,pdf|max:2048',
+        ]);
+    
         try {
-          
-            $validatedData = $request->validate([
-                'expense_date' => 'required|date',
-                'category' => 'required|string|max:255',
-                'employee_id' => 'required|exists:employees,employee_id',
-                'amount' => 'required|numeric',
-                'remarks' => 'nullable|string',
-                'receipt' => 'nullable|file|mimes:jpeg,png,pdf|max:2048',
-            ]);
-    
-       
-            $expense = new Expense($validatedData);
+           
+            $receiptPath = null;
             if ($request->hasFile('receipt')) {
-                $expense->receipt_path = $request->file('receipt')->store('receipts', 'public');
+                $receiptPath = $request->file('receipt')->store('receipts', 'public');
             }
-            $expense->save();
     
-            return redirect()->route('expenseList')->with('success', 'Expense added successfully!');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to add expense: ' . $e->getMessage())->withInput();
+            $validated['receipt_path'] = $receiptPath;
+    
+            Expense::create($validated);
+    
+            return redirect()->route('expenseList')->with('success', 'Expense added successfully.');
+        } catch (\Exception $e) { 
+            return error_api_processor(
+                'An error occurred while adding the expense.',
+                500,
+                ['errors' => ['error' => $e->getMessage()]]
+            );
         }
-    }
-    
-
-   
+    }  
+      
 public function showExpenses()
     {
         $expenses = Expense::with('employee')->get();  

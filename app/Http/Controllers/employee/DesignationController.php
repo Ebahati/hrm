@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Employee;
 use App\Http\Controllers\Controller;
 use App\Models\Designation;
@@ -35,22 +34,35 @@ class DesignationController extends Controller
             return redirect()->route('manageDesignations')->with('success', 'Designation added successfully.');
         } catch (\Illuminate\Database\QueryException $e) {
             if ($e->getCode() === '23000') { 
-                return redirect()->back()->withErrors(['name' => 'The designation already exists for this department.'])->withInput();
+                return error_api_processor(
+                    'The designation already exists for this department.',
+                    422, 
+                    ['errors' => ['name' => 'The designation already exists for this department.']]
+                );
+                
             }
           
-            return redirect()->back()->withErrors(['error' => 'An error occurred while adding the designation.'])->withInput();
+            return error_api_processor(
+                'An error occurred while adding the designation.',
+                500, 
+                ['errors' => ['error' => 'An error occurred while adding the designation.']]
+            );
+            
         }
     }
     
-
+    public function destroy($id)
+    {
+        try {
+            $designation = Designation::findOrFail($id);
+            $designation->delete();
     
-
-     public function destroy($id)
-     {
-         $designation = Designation::findOrFail($id);
-         $designation->delete();
-     
-         return redirect()->route('manageDesignations')->with('success', 'Designation deleted successfully.');
-     }
-     
+            return success_api_processor(null, 'Designation deleted successfully!', 200);
+        } catch (\Exception $e) {
+            return error_api_processor('Failed to delete designation.', 400);
+        }
+    }
+    
+    
 }
+    

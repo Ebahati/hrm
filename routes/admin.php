@@ -139,7 +139,7 @@ Route::middleware(['auth', 'employee.access'])->group(function () {
         Route::post('store-holiday', 'store')->name('storeHoliday');
         Route::get('edit-holiday/{id}', 'edit')->name('editHoliday');
         Route::put('update-holiday/{id}', 'update')->name('updateHoliday');
-        Route::delete('Holiday/delete/{id}', 'destroy')->name('deleteHoliday');
+     
         Route::delete('holiday/{id}', 'destroy')->name('deleteHoliday');
     });
 });

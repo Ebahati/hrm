@@ -44,15 +44,7 @@
 
                      
 
-                        @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
+                       
 
                   <div class="card-body">
                     
@@ -80,12 +72,7 @@
                         </div>
                       </div>
                     </div>
-                    
-                    
-                    
-                    
-                    
-                   
+                                      
                   </div>
                   <div class="p-3 border-top">
                     <div class="form-group mb-0 text-end">

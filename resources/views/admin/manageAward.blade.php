@@ -55,28 +55,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($awards as $award)
-                                <tr>
-                                    <td>{{ $award->employee_id }}</td>
-                                    <td>{{ $award->employee->name }}</td>
-                                    <td>{{ $award->award_category }}</td>
-                                    <td>{{ $award->gift_item }}</td>
-                                    <td>{{ $award->date }}</td>
-                                    <td>{{ $award->description }}</td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <form action="{{ route('deleteAward', $award->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this award?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn bg-danger-subtle text-danger">Delete</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforeach
-                               
-                            </tbody>
-                        </table>
+    @foreach($awards as $award)
+    <tr id="award-row-{{ $award->id }}">
+        <td>{{ $award->employee_id }}</td>
+        <td>{{ $award->employee->name }}</td>
+        <td>{{ $award->award_category }}</td>
+        <td>{{ $award->gift_item }}</td>
+        <td>{{ $award->date }}</td>
+        <td>{{ $award->description }}</td>
+        <td>
+            <button 
+                class="btn bg-danger-subtle text-danger deleteAwardButton" 
+                data-id="{{ $award->id }}" 
+                data-url="{{ route('deleteAward', $award->id) }}">
+                Delete
+            </button>
+        </td>
+    </tr>
+    @endforeach
+</tbody>
+
+        </table>
                     </div>
                 </div>
             </div>
@@ -84,5 +83,35 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $(document).on('click', '.deleteAwardButton', function(e) {
+            e.preventDefault();
+
+            var awardId = $(this).data('id');
+            var url = $(this).data('url');
+
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.status === true) {  
+                        $('#award-row-' + awardId).remove();
+                        toastr.success(response.message);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error('An error occurred while deleting the award.');
+                }
+            });
+        });
+    });
+</script>
+
 
 @endsection

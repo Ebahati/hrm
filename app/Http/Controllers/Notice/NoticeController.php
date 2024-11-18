@@ -24,31 +24,48 @@ class NoticeController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'notice_title' => 'required|string|max:255',
-            'notice_content' => 'required|string',
-            'publish_date' => 'required|date',
-            'status' => 'required|in:active,inactive',
-        ]);
+{
+    $validatedData = $request->validate([
+        'notice_title' => 'required|string|max:255',
+        'notice_content' => 'required|string',
+        'publish_date' => 'required|date|after_or_equal:today',
+        'status' => 'required|in:active,inactive',
+    ]);
 
+    try {
         Notice::create([
-            'title' => $request->notice_title,
-            'content' => $request->notice_content,
-            'publish_date' => $request->publish_date,
-            'status' => $request->status,
+            'title' => $validatedData['notice_title'],
+            'content' => $validatedData['notice_content'],
+            'publish_date' => $validatedData['publish_date'],
+            'status' => $validatedData['status'],
         ]);
 
         return redirect()->route('manageNotice')->with('success', 'Notice posted successfully.');
-    }
+    } catch (\Illuminate\Database\QueryException $e) {
+        
+        if ($e->getCode() === '23000') {
+            return error_api_processor('Failed to post notice due to a unique constraint violation.', 422, [
+                'errors' => ['title' => 'The notice title already exists.'],
+            ]);
+        }
 
-  
+       
+        return error_api_processor('An error occurred while posting the notice.', 500, [
+            'errors' => ['error' => 'An error occurred while posting the notice.'],
+        ]);
+    }
+}
+
+    
     public function destroy($id)
     {
-        $holiday = Notice::findOrFail($id);
-        $holiday->delete();  
+        try {
+            $notice = Notice::findOrFail($id);
+            $notice->delete();
     
-        return redirect()->route('manageNotice')->with('success', 'Notice deleted successfully!');
+            return success_api_processor(null, 'Notice deleted successfully!', 200);
+        } catch (\Exception $e) {
+            return error_api_processor('Failed to delete notice.', 400);
+        }
     }
-
-}
+ }

@@ -31,16 +31,16 @@
             <div class="datatables">
                 <div class="card">
                     <div class="card-body">
-                    @if(session('success'))
+                        @if(session('success'))
                             <div class="alert alert-success">
                                 {{ session('success') }}
                             </div>
                         @endif
                         @if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
+                            <div class="alert alert-danger">
+                                {{ session('error') }}
+                            </div>
+                        @endif
 
                         <div class="mb-2">
                             <a href="{{ route('addBonus') }}" class="btn btn-primary">Add Bonus</a>
@@ -60,28 +60,22 @@
                                 </thead>
                                 <tbody>
                                     @forelse($bonuses as $bonus)
-                                        <tr>
-                                            
+                                        <tr id="bonus-row-{{ $bonus->id }}">
                                             <td>{{ $bonus->employee ? $bonus->employee->name : 'N/A' }}</td>
                                             <td>{{ $bonus->employee && $bonus->employee->designation ? $bonus->employee->designation->name : 'No Designation' }}</td>
-
-
                                             <td>{{ $bonus->bonus_type }}</td>
                                             <td>{{ \Carbon\Carbon::parse($bonus->date)->format('F j, Y') }}</td>
-
-
                                             <td>Ksh.{{ number_format($bonus->amount, 2) }}</td>
                                             <td>
-    <div class="d-flex align-items-center gap-2">
-    <a href="{{ route('editBonus', $bonus->id) }}" class="btn btn-primary btn-sm">Edit</a>
-
-        <form action="{{ route('deleteBonus', $bonus->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this bonus?');">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-        </form>
-    </div>
-</td>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <a href="{{ route('editBonus', $bonus->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                                    <button class="btn bg-danger-subtle text-danger deleteBonusButton" 
+                                                            data-id="{{ $bonus->id }}" 
+                                                            data-url="{{ route('deleteBonus', $bonus->id) }}">
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
@@ -96,4 +90,36 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+           
+            $(document).on('click', '.deleteBonusButton', function(e) {
+                e.preventDefault();
+
+                var bonusId = $(this).data('id');
+                var url = $(this).data('url');
+
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.status === true) {
+                            $('#bonus-row-' + bonusId).remove();
+                            toastr.success(response.message); 
+                        } else {
+                            toastr.error(response.message); 
+                        }
+                    },
+                    error: function(xhr) {
+                        toastr.error('An error occurred while deleting the bonus.');
+                    }
+                });
+            });
+        });
+    </script>
+
 @endsection

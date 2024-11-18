@@ -44,11 +44,16 @@ class AwardController extends Controller
     }
 
     public function destroy($id)
-{
-    $award = Award::findOrFail($id);
-    $award->delete();
-
-    return redirect()->route('manageAward')->with('success', 'Award deleted successfully!');
-}
+    {
+        try {
+            $award = Award::findOrFail($id);
+            $award->delete();
+    
+            return success_api_processor(null, 'Award deleted successfully!', 200);
+        } catch (\Exception $e) {
+            return error_api_processor('Failed to delete award.', 400);
+        }
+    }
+    
 
 }
